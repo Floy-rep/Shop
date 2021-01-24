@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
+use App\Entity\OrderGood;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\GoodsRepository;
 use App\Security\CustomAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +20,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, CustomAuthenticator $authenticator): Response
+    public function register(Request $request, GoodsRepository $repository, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, CustomAuthenticator $authenticator): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -31,6 +34,12 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $order = new Order();
+            $order->setOrderId($user);
+            $orderGood = new OrderGood();
+            $orderGood->setOrder($order);
+
+            $user->addOrder($order);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
