@@ -31,16 +31,17 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/addgood", name="addGood", methods={"GET"}, options={"expose"=true})
+     * @Route("/admin/addgood", name="addGood", methods={"GET"}, options={"expose"=true})
+     * @param Request $request
+     * @param Admin $admin
+     * @return JsonResponse
      */
-    public function addGood(Request $request, Admin $admin)
+    public function addGood(Request $request, Admin $admin): JsonResponse
     {
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizer, $encoder);
-//        if ($request->isXmlHttpRequest()) {
-//            return new JsonResponse($serializer->serialize($admin->add(), 'json'), 200, [], true);
-//        }
+-        $serializer = new Serializer($normalizer, $encoder);
+        $request->request->get('lol');
         return new JsonResponse([
             "ERROR" => "Incorrect JSON"
         ]);
