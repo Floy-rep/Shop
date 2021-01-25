@@ -56,4 +56,11 @@ class GoodsController extends AbstractController
             "ERROR" => "Incorrect JSON"
         ]);
     }
+
+    /**
+     * @Route("/addgood", name="addGood", methods={"GET"})
+     */
+    public function addGoods(){
+
+    }
 }

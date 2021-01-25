@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ViewGoodsType extends AbstractType
+class GoodType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -17,7 +17,11 @@ class ViewGoodsType extends AbstractType
             ->add('price')
             ->add('color')
             ->add('description')
-            ->add('submit', SubmitType::class)
+            ->add('count')
+            ->add('category')
+            ->add('submit', SubmitType::class,[
+
+            ])
         ;
     }
 

@@ -24,6 +24,7 @@
                 <h4 id="goodName_{{ good.id }}"></h4>
                 <p id="goodStuff_{{ good.id }}"></p>
                 <p id="goodDescription_{{ good.id }}"></p>
+{#                <p>{{ app.user.getrole() }}</p>#}
                 <input style="width: 70px" type="number" value="0" min="1" max="{{ good.count }}" id="goodNum_{{ good.id }}">
                 {% if is_granted("ROLE_ADMIN") %}
                     <input type="button" value="Remove" id="buttonRemove" data-id="{{ good.id }}">
