@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Goods;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,8 +20,10 @@ class GoodType extends AbstractType
             ->add('description')
             ->add('count')
             ->add('category')
-            ->add('submit', SubmitType::class,[
-
+            ->add('submit', ButtonType::class,[
+                "attr" => [
+                    'class' => "submitButton"
+                ]
             ])
         ;
     }

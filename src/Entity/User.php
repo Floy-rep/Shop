@@ -43,6 +43,11 @@ class User implements UserInterface
      */
     private $orders;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $cart;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -145,4 +150,17 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getCart(): ?string
+    {
+        return $this->cart;
+    }
+
+    public function setCart(?string $cart): self
+    {
+        $this->cart = $cart;
+
+        return $this;
+    }
+
 }

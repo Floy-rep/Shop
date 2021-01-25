@@ -51,7 +51,7 @@ document.addEventListener('click', function (event){
             xhr.addEventListener('load', function (event) {
                 if (this.readyState === 4) {
                     if (this.status === 200 && this.statusText === "OK") {
-                        if (typeof JSON.parse(this.responseText)["unicId"] != "undefined")
+                        if (typeof JSON.parse(this.responseText)["id"] != "undefined")
                         {
                             let item_to_remove = document.getElementById('item_'+target.id)
                             resolve(JSON.parse(this.responseText));
@@ -68,17 +68,17 @@ document.addEventListener('click', function (event){
 })
 
 function Insert(data){
-    let item = document.getElementById('item_'+data.unicId);
-    let name = document.getElementById('itemName_'+data.unicId);
+    let item = document.getElementById('item_'+data.id);
+    let name = document.getElementById('itemName_'+data.id);
     name.innerText = data.name;
 
-    let stuff = document.getElementById('itemStuff_'+data.unicId);
-    stuff.innerText = 'Color - '+ data.color + ', Price - ' + data.price + "$" + ", Count - " + data.count;
+    let stuff = document.getElementById('itemStuff_'+data.id);
+    stuff.innerText = 'Color - '+ data.color + ', Price - ' + data.price + "$";
 
-    let taken = document.getElementById('itemTaken_'+data.unicId);
-    taken.innerText = "You take - " + data.taken + " goods"
+    let taken = document.getElementById('itemTaken_'+data.id);
+    taken.innerText = "You take - " + data.amount + " goods"
 
-    let description = document.getElementById('itemDescription_'+data.unicId);
+    let description = document.getElementById('itemDescription_'+data.id);
     if (data.description.length === 0)
         description.innerText = 'This good dont have description';
     else

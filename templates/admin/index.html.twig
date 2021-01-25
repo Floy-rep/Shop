@@ -4,4 +4,9 @@
 
 {% block body %}
     {{ form(form) }}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('admin') }}
+    {% endblock %}
 {% endblock %}
+

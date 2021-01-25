@@ -41,7 +41,9 @@ class AddToCart
             if ($good_by_id){
                 if ($data["taken"] <= $count_rep && $data["taken"] > 0){
                     if ($method == "session")
-                        $this->addToSession($data, $serializer->normalize($good_by_id, null, [AbstractNormalizer::IGNORED_ATTRIBUTES => ['orderGood']]));
+                        $this->addToSession($data,
+                            $serializer->normalize($good_by_id, null,
+                                [AbstractNormalizer::IGNORED_ATTRIBUTES => ['orderGood']]));
                     elseif ($method == "database")
                         $this->addToDataBase($data);
 

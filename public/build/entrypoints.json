@@ -3,23 +3,31 @@
     "main": {
       "js": [
         "/build/runtime.js",
-        "/build/vendors~cart~main.js",
-        "/build/cart~main.js",
+        "/build/vendors~admin~cart~main.js",
+        "/build/admin~cart~main.js",
         "/build/main.js"
       ],
       "css": [
-        "/build/cart~main.css"
+        "/build/main.css"
       ]
     },
     "cart": {
       "js": [
         "/build/runtime.js",
-        "/build/vendors~cart~main.js",
-        "/build/cart~main.js",
+        "/build/vendors~admin~cart~main.js",
+        "/build/admin~cart~main.js",
         "/build/cart.js"
       ],
       "css": [
-        "/build/cart~main.css"
+        "/build/cart.css"
+      ]
+    },
+    "admin": {
+      "js": [
+        "/build/runtime.js",
+        "/build/vendors~admin~cart~main.js",
+        "/build/admin~cart~main.js",
+        "/build/admin.js"
       ]
     }
   }
