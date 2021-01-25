@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\OrderGoodRepository;
+use App\Service\Cart;
 use App\Service\ShowCart;
 use App\Service\ShowGoods;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,5 +60,28 @@ class CartController extends AbstractController
         return new JsonResponse([
             "ERROR" => "Incorrect JSON"
         ]);
+    }
+
+    public function add(Request $request, Cart $cart)
+    {
+        $productId = $request->get('product_id');
+
+        $amount = $request->get('amount');
+
+        $cart->add([
+            'product_id' => $productId,
+            'amount' => $amount
+        ]);
+
+        $cart->save();
+
+        return new JsonResponse([
+            'message' => 'ура добавилось'
+        ]);
+    }
+
+    public function getCartItems(Cart $cart)
+    {
+        return new JsonResponse($cart->getItems());
     }
 }
