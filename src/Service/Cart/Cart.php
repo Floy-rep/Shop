@@ -4,6 +4,7 @@ namespace App\Service\Cart;
 
 use App\Repository\GoodsRepository;
 use App\Service\Cart\Storage\CartDatabaseStorage;
+use App\Service\Cart\Storage\CartDatabaseStorageUser;
 use App\Service\Cart\Storage\CartSessionStorage;
 use App\Service\Cart\Storage\CartStorageInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +21,7 @@ class Cart
 
     private $cartStorage;
     private $goodsRepository;
+    private $cartDatabaseUser;
 
     public function __construct(
         Security $security,
@@ -31,6 +33,11 @@ class Cart
         $this->goodsRepository = $goodsRepository;
 
         $this->cartStorage = $security->getUser() ? $cartDatabaseStorage : $cartSessionStorage;
+        $this->items = $this->cartStorage->load();
+    }
+
+    public function user($user){
+        $this->cartStorage->setUser($user);
         $this->items = $this->cartStorage->load();
     }
 

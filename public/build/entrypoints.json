@@ -29,6 +29,12 @@
         "/build/admin~cart~main.js",
         "/build/admin.js"
       ]
+    },
+    "global": {
+      "js": [
+        "/build/runtime.js",
+        "/build/global.js"
+      ]
     }
   }
 }

@@ -62,17 +62,15 @@ class CartController extends AbstractController
 
         if ($request->isXmlHttpRequest()){
             $productId = $request->get('id');
-            $amount = $request->get('taken');
+            $amount = $request->get('amount');
             $res = $cart->add([
                 'product_id' => $productId,
                 'amount' => $amount
             ]);
             $cart->save();
         }
-
         return $res ? new JsonResponse(["id" => $productId]) :
             new JsonResponse(["ERROR" => "Incorrect JSON"]);
-
     }
 
     /**
@@ -89,7 +87,6 @@ class CartController extends AbstractController
             $cart->save();
             return new JsonResponse((string)$res, 200, [], true);
         }
-        dump($productId);
         return $res ? new JsonResponse(["id" => $productId]) :
             new JsonResponse(["ERROR" => "Incorrect JSON"]);
     }

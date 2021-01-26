@@ -1,31 +1,13 @@
 import './styles/app.css';
-
 let Routing = require("../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router");
 let Routes = require('./js-routes.json');
 Routing.setRoutingData(Routes);
 
 document.addEventListener('DOMContentLoaded', function (event){
     new Promise(function (resolve, reject){
-        let url = Routing.generate('getGoods');
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-        xhr.addEventListener('load', function (event){
-            if (this.readyState === 4) {
-                if (this.status === 200 && this.statusText === "OK")
-                {
-                    resolve(JSON.parse(this.responseText));
-                }
-                else{
-                    reject("ERROR");
-                }
-            }
-
-        })
-        xhr.send();
+        xhr(resolve, reject , Routing.generate('getGoods'), 'GET', '');
     })
         .then((response) => {
-            console.log(response)
             for (let i = 0; i < response.length; i++){
                 Insert(response[i]);
             }
@@ -40,33 +22,40 @@ document.addEventListener('click', function (event){
     if(target.type === "button" && target.className === "buttonAdd" && isNaN(parseInt(target.id)) === false)
     {
         new Promise(function (resolve, reject) {
-            let url = Routing.generate('addToCard', {id: target.id});
-            let xhr = new XMLHttpRequest();
-
-            let count = document.getElementById('goodNum_'+target.id)
             let formData = new FormData()
+            let count = document.getElementById('goodNum_'+target.id)
             formData.append('id', target.id)
-            formData.append('taken', count.value)
-
-            xhr.open("POST", url);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.addEventListener('load', function (event) {
-                if (this.readyState === 4) {
-                    if (this.status === 200 && this.statusText === "OK") {
-                        console.log(JSON.parse(this.responseText)["id"]);
-                        if (typeof JSON.parse(this.responseText)["id"] != "undefined")
-                        {
-                            target.disabled = true;
-                            resolve(JSON.parse(this.responseText));
-                        }
-                    } else {
-                        reject("ERROR");
-                    }
-                }
-
-            })
-            xhr.send(formData);
+            formData.append('amount', count.value)
+            xhr(resolve, reject, Routing.generate('addToCard', {id: target.id}), 'POST', formData);
         })
+            .then((resolve) => {
+                target.disabled = true;
+            })
+    }
+    if(target.type === "button" && target.id === "buttonRemove" && isNaN(parseInt(Number(target.dataset.id))) === false)
+    {
+        new Promise(function (resolve, reject) {
+            let formData = new FormData()
+            formData.append('id', Number(target.dataset.id))
+            xhr(resolve, reject, Routing.generate('removeGood', {id: target.dataset.id}), 'POST', formData);
+        })
+            .then((resolve) => {
+                let good = document.getElementById('good_'+Number(target.dataset.id))
+                good.parentNode.removeChild(good)
+            })
+    }
+
+    if(target.type === "button" && target.id === "buttonSort")
+    {
+        new Promise(function (resolve, reject) {
+            let formData = new FormData()
+            formData.append('id', Number(target.dataset.id))
+            xhr(resolve, reject, Routing.generate('removeGood', {id: target.dataset.id}), 'GET', formData);
+        })
+            .then((resolve) => {
+                let good = document.getElementById('good_'+Number(target.dataset.id))
+                good.parentNode.removeChild(good)
+            })
     }
 })
 
@@ -94,5 +83,19 @@ function Insert(data){
     good.appendChild(document.createElement('hr'));
 
     good.style.display = 'inherit'
+}
 
+function xhr(resolve, reject, url, method, formData){
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.addEventListener('load', function (event) {
+        if (this.readyState === 4) {
+            if (this.status === 200 && this.statusText === "OK")
+                resolve(JSON.parse(this.responseText));
+            else
+                reject("ERROR");
+        }
+    })
+    xhr.send(formData);
 }

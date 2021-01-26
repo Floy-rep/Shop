@@ -13,18 +13,28 @@
 
     {% if app.user %}
         <a href="{{ path('app_logout') }}">Logout</a>
+        {% if is_granted("ROLE_ADMIN") %}
+            <a href="{{ path('admin') }}">Admin panel</a>
+        {% endif %}
     {% else %}
         <a href="{{ path('app_register') }}">Sign up</a>
         <a href="{{ path('app_login') }}">Sign In</a>
     {% endif %}
-
+    
+    <form method="post">
+        <h2>Sort by price</h2>
+        <label for="minNum"></label>
+        <input type="number" name="minNum" id="minNum" value="0" min="0" max="9999">
+        <label for="maxNum"></label>
+        <input type="number" name="maxNum" id="maxNum" value="0" min="0" max="9999">
+        <input type="button" id="buttonSort" value="Sort">
+    </form>
     {% for good in goods %}
         <form method="POST" id="good_{{ good.id }}" style="display: none" >
             <div >
                 <h4 id="goodName_{{ good.id }}"></h4>
                 <p id="goodStuff_{{ good.id }}"></p>
                 <p id="goodDescription_{{ good.id }}"></p>
-{#                <p>{{ app.user.getrole() }}</p>#}
                 <input style="width: 70px" type="number" value="0" min="1" max="{{ good.count }}" id="goodNum_{{ good.id }}">
                 {% if is_granted("ROLE_ADMIN") %}
                     <input type="button" value="Remove" id="buttonRemove" data-id="{{ good.id }}">
@@ -35,6 +45,7 @@
 </div>
     {% block javascripts %}
         {{ encore_entry_script_tags('main') }}
+        {{ encore_entry_script_tags('global') }}
     {% endblock %}
 {% endblock %}
 

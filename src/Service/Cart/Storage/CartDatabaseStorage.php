@@ -17,6 +17,10 @@ class CartDatabaseStorage implements CartStorageInterface
         $this->user = $security->getUser();
     }
 
+    public function setUser($user) {
+        $this->user = $user;
+    }
+
     public function save(array $items)
     {
         $this->user->setCart(serialize($items));

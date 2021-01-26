@@ -1,13 +1,16 @@
 {
   "build/admin.js": "/build/admin.js",
-  "build/cart.js": "/build/cart.js",
-  "build/cart~main.css": "/build/cart~main.css",
-  "build/cart~main.js": "/build/cart~main.js",
-  "build/main.js": "/build/main.js",
-  "build/runtime.js": "/build/runtime.js",
-  "build/vendors~cart~main.js": "/build/vendors~cart~main.js",
-  "build/vendors~admin~cart~main.js": "/build/vendors~admin~cart~main.js",
   "build/admin~cart~main.js": "/build/admin~cart~main.js",
   "build/cart.css": "/build/cart.css",
-  "build/main.css": "/build/main.css"
+  "build/cart.js": "/build/cart.js",
+  "build/global.js": "/build/global.js",
+  "build/main.css": "/build/main.css",
+  "build/main.js": "/build/main.js",
+  "build/runtime.js": "/build/runtime.js",
+  "build/vendors~admin~cart~main.js": "/build/vendors~admin~cart~main.js",
+  "build/admin~cart.js": "/build/admin~cart.js",
+  "build/vendors~admin~cart.js": "/build/vendors~admin~cart.js",
+  "build/cart~main.css": "/build/cart~main.css",
+  "build/cart~main.js": "/build/cart~main.js",
+  "build/vendors~cart~main.js": "/build/vendors~cart~main.js"
 }

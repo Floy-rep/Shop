@@ -3,8 +3,34 @@
 {% block title %}Hello AdminController!{% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <a href="{{ path('viewGoods') }}">Back</a>
 
+    <div class="good" style="display: flex; flex-direction: column;width: 400px">
+        <label for="good_name">Name</label>
+        <input id="good_name" type="text" class="name">
+        <label for="good_price">Price</label>
+        <input id="good_price" type="number" class="price">
+        <label for="good_color">Color</label>
+        <input id="good_color" type="text" class="price">
+        <label for="good_description">Description</label>
+        <input id="good_description" type="text" class="price">
+        <label for="good_count">Count</label>
+        <input id="good_count" type="number" class="price">
+        <label for="good_category">Category</label>
+        <input id="good_category" type="text" class="price">
+        <input id="good_submit" type="button" class="submitButton" value="Submit">
+    </div>
+
+    <hr>
+    {% for user in users %}
+        <div class="user" id="user_{{ user.id }}">
+            <p>{{ user.id }}</p>
+            <p id="email_{{ user.id }}">{{ user.email }}</p>
+            <input id="{{ user.id }}" type="button" class="deleteButton" value="delete">
+            <input id="{{ user.id }}" type="button" class="promtButton" value="to Admin">
+            <hr>
+        </div>
+    {% endfor %}
     {% block javascripts %}
         {{ encore_entry_script_tags('admin') }}
     {% endblock %}
