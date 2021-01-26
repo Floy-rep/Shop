@@ -50,11 +50,10 @@ document.addEventListener('click', function (event){
             xhr.addEventListener('load', function (event) {
                 if (this.readyState === 4) {
                     if (this.status === 200 && this.statusText === "OK") {
-                        if (typeof JSON.parse(this.responseText)["id"] != "undefined")
                         {
                             let item_to_remove = document.getElementById('item_'+target.id)
-                            resolve(JSON.parse(this.responseText));
                             item_to_remove.parentNode.removeChild(item_to_remove)
+                            resolve(JSON.parse(this.responseText));
                         }
                     } else {
                         reject("ERROR");
