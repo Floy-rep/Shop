@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Goods;
 use App\Entity\OrderGood;
-use App\Form\ViewGoodsType;
+use App\Repository\CategoryRepository;
 use App\Repository\GoodsRepository;
 use App\Repository\OrderGoodRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
+use App\Service\Goods\GoodsService;
+use App\Service\Goods\Sort\PriceSort;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,16 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Service\ShowGoods;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class GoodsController extends AbstractController
 {
     private $manager;
     private $goods;
-    public function __construct(EntityManagerInterface $manager, GoodsRepository $goods)
+    private $categories;
+    public function __construct(EntityManagerInterface $manager, GoodsRepository $goods, CategoryRepository $categories)
     {
         $this->manager = $manager;
         $this->goods = $goods;
+        $this->categories = $categories;
     }
 
 
@@ -33,24 +39,30 @@ class GoodsController extends AbstractController
      * @Route("/", name="viewGoods", methods={"GET"})
      * @return Response
      */
-    public function viewGoods(OrderRepository $order, UserRepository $user, OrderGoodRepository $goodRepository, SessionInterface $session) : Response
+    public function viewGoods() : Response
     {
         $data =$this->goods->findAll();
+        $categories = $this->categories->findAll();
         return $this->render('view_items/index.html.twig', [
-            "goods" => $data
+            "goods" => $data,
+            "categories" => $categories
         ]);
     }
 
     /**
-     * @Route("/getgoods", name="getGoods", methods={"GET"}, options={"expose"=true})
+     * @Route("/getgoods", name="getGoods", methods={"POST"}, options={"expose"=true})
      * @param Request $request
-     * @param ShowGoods $showgoods
+//     * @param GoodsService $service
      * @return Response
      */
-    public function getGoods(Request $request, ShowGoods $showgoods)
+    public function getGoods(Request $request, GoodsService $service)
     {
+//        $array = new GoodsService(new PriceSort($request->request->get('data')));
+
         if ($request->isXmlHttpRequest()){
-            return new JsonResponse($showgoods->show(), 200, [], true);
+            $data = $service->sortAll((array)json_decode($request->request->get('data'),true));
+            dump($data);
+//            return new JsonResponse($showgoods->show((array)json_decode($request->request->get('data'),true)), 200, [], true);
         }
         return new JsonResponse([
             "ERROR" => "Incorrect JSON"

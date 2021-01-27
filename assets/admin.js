@@ -12,13 +12,21 @@ document.addEventListener('click', function (event){
         let color = document.getElementById('good_color').value
         let description = document.getElementById('good_description').value
         let count = document.getElementById('good_count').value
-        let category = document.getElementById('good_category').value
-
+        let category = document.getElementById('good_category')
+        let category_option = category[category.selectedIndex].id
         new Promise(function (resolve, reject) {
             let url = Routing.generate('addGood');
             let formData = new FormData();
             category = category.length === 0 ? "null" : category
-            formData.append('data',  [name, price, color, description, count, category])
+            let data = {
+                'name': name,
+                'price': price,
+                'color': color,
+                'description': description,
+                'count': count,
+                'category': category_option
+            }
+            formData.append('data', JSON.stringify(data))
             xhrReq(resolve,reject,url,"POST",formData)
         })
             .then((response) => {

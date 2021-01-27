@@ -16,8 +16,12 @@
         <input id="good_description" type="text" class="price">
         <label for="good_count">Count</label>
         <input id="good_count" type="number" class="price">
-        <label for="good_category" style="display: none">Category</label>
-        <input id="good_category" type="text" class="price" style="display: none">
+        <label for="good_category">Category</label>
+        <select name="good_category" id="good_category" style="width: 250px;">
+            {% for category in categories %}
+                <option id="{{ category.id }}" value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
         <input id="good_submit" type="button" class="submitButton" value="Submit">
     </div>
 

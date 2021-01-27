@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Goods;
 use App\Form\GoodType;
+use App\Repository\CategoryRepository;
 use App\Service\Admin\Admin;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,9 +18,11 @@ use Symfony\Component\Serializer\Serializer;
 class AdminController extends AbstractController
 {
     private $admin;
-    public function __construct(Admin $admin)
+    private $categories;
+    public function __construct(Admin $admin, CategoryRepository $categories)
     {
         $this->admin = $admin;
+        $this->categories = $categories;
     }
 
     /**
@@ -30,6 +33,7 @@ class AdminController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('admin/index.html.twig', [
             'users' => $this->admin->getUsers(),
+            'categories' => $this->categories->findAll()
         ]);
     }
 
@@ -40,8 +44,7 @@ class AdminController extends AbstractController
      */
     public function addGood(Request $request): JsonResponse
     {
-        $data = explode(',' ,$request->request->get('data'));
-        $res = $this->admin->addGood($data);
+        $res = $this->admin->addGood((array)json_decode($request->request->get('data')));
         if ($request->isXmlHttpRequest() && $res){
             return new JsonResponse(["Success" => "success"]);
         }

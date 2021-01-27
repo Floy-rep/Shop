@@ -81,7 +81,11 @@ function Insert(data){
         description.innerText = 'This good dont have description';
     else
         description.innerText = 'Description - ' + data.description;
-
+    let category = document.getElementById('itemCategory_'+data.id)
+    if (data.category !== null)
+        category.innerText = "Category - " + data.category.categoryName;
+    else
+        category.innerText = "Category is undefinded ";
 
     item.appendChild(document.createElement('hr'));
     item.style.display = 'inherit'

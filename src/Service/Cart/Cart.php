@@ -4,7 +4,6 @@ namespace App\Service\Cart;
 
 use App\Repository\GoodsRepository;
 use App\Service\Cart\Storage\CartDatabaseStorage;
-use App\Service\Cart\Storage\CartDatabaseStorageUser;
 use App\Service\Cart\Storage\CartSessionStorage;
 use App\Service\Cart\Storage\CartStorageInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,7 +35,8 @@ class Cart
         $this->items = $this->cartStorage->load();
     }
 
-    public function user($user){
+    public function user($user)
+    {
         $this->cartStorage->setUser($user);
         $this->items = $this->cartStorage->load();
     }
@@ -54,14 +54,16 @@ class Cart
         return $res;
     }
 
-    public function getItem(int $id, array $attr=null)
+    public function getItem(int $id, array $attr = null)
     {
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizer, $encoder);
         return $serializer->normalize($this->goodsRepository->find((int)$id),
-            'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => $attr]);
+            null, [AbstractNormalizer::ATTRIBUTES =>
+                ['id', 'name', 'price', 'color', 'description', 'count', 'category' => ['categoryName']]]);
     }
+
 
     public function isEmpty(): bool
     {
@@ -89,8 +91,7 @@ class Cart
 
     public function add(array $data): bool
     {
-        if ($this->getItem($data['product_id'])['count'] >= $data['amount'] && $data['amount'] > 0)
-        {
+        if ($this->getItem($data['product_id'])['count'] >= $data['amount'] && $data['amount'] > 0) {
             $this->items[$data['product_id']] = $data['amount'];
             return true;
         }

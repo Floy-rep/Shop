@@ -35,7 +35,7 @@ class Goods
     private $color;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="goods")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="goods", fetch="EAGER")
      */
     private $category;
 

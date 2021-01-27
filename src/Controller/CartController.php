@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\OrderGoodRepository;
 use App\Service\RemoveFromCart;
 use App\Service\ShowCart;
-use App\Service\ShowGoods;
+use App\Service\Goods;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,7 @@ class CartController extends AbstractController
     /**
      * @Route("/cart", name="cart")
      */
-    public function index(SessionInterface $session, OrderGoodRepository $ordergood, Cart $cart): Response
+    public function index(Cart $cart): Response
     {
         return $this->render('view_cart/index.html.twig', [
             "cart" => $cart->getItems(),
@@ -33,7 +33,7 @@ class CartController extends AbstractController
     /**
      * @Route("/getcart", name="getCart", methods={"GET"}, options={"expose"=true})
      * @param Request $request
-     * @param ShowCart $cart
+     * @param Cart $cart
      * @return Response
      */
     public function getGoods(Request $request, Cart $cart)
