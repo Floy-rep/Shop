@@ -10,7 +10,6 @@ class CategorySort implements SortInterface
     {
         $sort_by_category = [];
         $sort_by = $sort_data['sort_by_category']['name'];
-        dump($data);
         if ($sort_by != "None") {
             if (!empty($data)) {
                 foreach ($data as $value) {

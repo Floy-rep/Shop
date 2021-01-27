@@ -52,7 +52,7 @@ class GoodsController extends AbstractController
     /**
      * @Route("/getgoods", name="getGoods", methods={"POST"}, options={"expose"=true})
      * @param Request $request
-//     * @param GoodsService $service
+     * @param GoodsService $service
      * @return Response
      */
     public function getGoods(Request $request, GoodsService $service)
@@ -60,9 +60,8 @@ class GoodsController extends AbstractController
 //        $array = new GoodsService(new PriceSort($request->request->get('data')));
 
         if ($request->isXmlHttpRequest()){
-            $data = $service->sortAll((array)json_decode($request->request->get('data'),true));
-            dump($data);
-//            return new JsonResponse($showgoods->show((array)json_decode($request->request->get('data'),true)), 200, [], true);
+            return new JsonResponse($service->sortAll((array)json_decode($request->request->get('data'),true))
+                ,200, [], true);
         }
         return new JsonResponse([
             "ERROR" => "Incorrect JSON"

@@ -42,12 +42,11 @@ class GoodsService
         $this->goods = $goods;
     }
 
-    public function sortAll($sort_data):array
+    public function sortAll($sort_data): string
     {
-        $result = [];
         $this->goods = $this->priceSort($sort_data);
         $this->goods = $this->categorySort($sort_data);
-        return $this->goods;
+        return $this->serializer->serialize($this->goods, 'json');
     }
 
     public function priceSort($sort_data):array

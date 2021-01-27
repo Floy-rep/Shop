@@ -10,7 +10,9 @@ class PriceSort implements SortInterface
     {
         $sort_by_price = [];
         $sort_by = $price_data = $sort_data['sort_by_price'];
-        if ($sort_by['min'] != 0 && $sort_by['max'] != 0) {
+        if ($sort_by['min'] == 0 && $sort_by['max'] == 0)
+            $sort_by_price = $data;
+        else {
             if (!empty($data)) {
                 foreach ($data as $value) {
                     if ($price_data['min'] <= $value['price'] && $price_data['max'] >= $value['price']) {
@@ -18,8 +20,7 @@ class PriceSort implements SortInterface
                     }
                 }
             }
-        } else
-            $sort_by_price = $data;
+        }
         return $sort_by_price;
     }
 }

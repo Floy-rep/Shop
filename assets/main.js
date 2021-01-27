@@ -7,7 +7,19 @@ Routing.setRoutingData(Routes);
 
 document.addEventListener('DOMContentLoaded', function (event){
     new Promise(function (resolve, reject){
-        xhr(resolve, reject , Routing.generate('getGoods'), 'POST', '');
+        let category = document.getElementById('category')
+        let data = {
+            "sort_by_price": {
+                "min": document.getElementById('minNum').value,
+                "max": document.getElementById('maxNum').value
+            },
+            "sort_by_category":{
+                "name": category[category.selectedIndex].value
+            }
+        }
+        let formData = new FormData()
+        formData.append('data', JSON.stringify(data));
+        xhr(resolve, reject , Routing.generate('getGoods'), 'POST', formData);
     })
         .then((response) => {
             while (goods.lastElementChild) {
@@ -26,7 +38,6 @@ document.addEventListener('click', function (event){
     let target = event.target;
     if(target.type === "button" && target.className === "buttonAdd" && isNaN(parseInt(target.id)) === false)
     {
-        target.value = 'Added';
         new Promise(function (resolve, reject) {
             let formData = new FormData()
             let count = document.getElementById('goodNum_'+target.id)
@@ -35,7 +46,8 @@ document.addEventListener('click', function (event){
             xhr(resolve, reject, Routing.generate('addToCard', {id: target.id}), 'POST', formData);
         })
             .then((response) => {
-                setTimeout(() => {target.value = "Add"}, 3000);
+                target.value = 'Added';
+                setTimeout(() => {target.value = "Add"}, 2000);
             })
     }
     // if(target.type === "button" && target.id === "buttonRemove" && isNaN(parseInt(Number(target.dataset.id))) === false)
@@ -53,7 +65,6 @@ document.addEventListener('click', function (event){
 
     if(target.type === "button" && target.id === "buttonSort")
     {
-        target.value = 'Sorted';
         new Promise(function (resolve, reject) {
             let formData = new FormData()
             let category = document.getElementById('category')
@@ -70,7 +81,8 @@ document.addEventListener('click', function (event){
             xhr(resolve, reject, Routing.generate('getGoods'), 'POST', formData);
         })
             .then((response) => {
-                setTimeout(() => {target.value = "Sort"}, 3000);
+                target.value = 'Sorted';
+                setTimeout(() => {target.value = "Sort"}, 2000);
                 while (goods.lastElementChild) {
                     goods.removeChild(goods.lastElementChild);
                 }
