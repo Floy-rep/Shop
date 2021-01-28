@@ -4,25 +4,29 @@
 
 {% block body %}
     <a href="{{ path('viewGoods') }}">Back</a>
+    <div class="panel_top" style="display: flex; flex-direction: row; justify-content: space-between" >
+        <div class="good" style="display: flex; flex-direction: column;width: 48%">
+            <label for="good_name">Name</label>
+            <input id="good_name" type="text" class="name">
+            <label for="good_price">Price</label>
+            <input id="good_price" type="number" class="price">
+            <label for="good_color">Color</label>
+            <input id="good_color" type="text" class="price">
+            <label for="good_description">Description</label>
+            <input id="good_description" type="text" class="price">
+            <label for="good_count">Count</label>
+            <input id="good_count" type="number" class="price">
+            <label for="good_category">Category</label>
+            <select name="good_category" id="good_category" style="width: 250px;">
+                {% for category in categories %}
+                    <option id="{{ category.id }}" value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+            <input id="good_submit" type="button" class="submitButton" value="Submit">
+        </div>
+        <div id="goodDelete" style="width: 48%">
 
-    <div class="good" style="display: flex; flex-direction: column;width: 400px">
-        <label for="good_name">Name</label>
-        <input id="good_name" type="text" class="name">
-        <label for="good_price">Price</label>
-        <input id="good_price" type="number" class="price">
-        <label for="good_color">Color</label>
-        <input id="good_color" type="text" class="price">
-        <label for="good_description">Description</label>
-        <input id="good_description" type="text" class="price">
-        <label for="good_count">Count</label>
-        <input id="good_count" type="number" class="price">
-        <label for="good_category">Category</label>
-        <select name="good_category" id="good_category" style="width: 250px;">
-            {% for category in categories %}
-                <option id="{{ category.id }}" value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select>
-        <input id="good_submit" type="button" class="submitButton" value="Submit">
+        </div>
     </div>
 
     <hr>

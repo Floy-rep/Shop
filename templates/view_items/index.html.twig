@@ -5,7 +5,6 @@
 
 <div class="example-wrapper">
     <h1>Hello its a shop! ✅</h1>
-    <p>asdsad</p>
     {% if app.user %}
         <h2>Auth as {{app.user.username}}</h2>
     {% endif %}
@@ -41,19 +40,6 @@
     <div id="goods">
 
     </div>
-{#    {% for good in goods %}#}
-{#        <form method="POST" id="good_{{ good.id }}" style="display: none" >#}
-{#            <div >#}
-{#                <h4 id="goodName_{{ good.id }}"></h4>#}
-{#                <p id="goodStuff_{{ good.id }}"></p>#}
-{#                <p id="goodDescription_{{ good.id }}"></p>#}
-{#                <input style="width: 70px" type="number" value="0" min="1" max="{{ good.count }}" id="goodNum_{{ good.id }}">#}
-{#                {% if is_granted("ROLE_ADMIN") %}#}
-{#                    <input type="button" value="Remove" id="buttonRemove" data-id="{{ good.id }}">#}
-{#                {% endif %}#}
-{#            </div>#}
-{#        </form>#}
-{#    {% endfor %}#}
 </div>
     {% block javascripts %}
         {{ encore_entry_script_tags('main') }}

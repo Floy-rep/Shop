@@ -7,19 +7,7 @@ Routing.setRoutingData(Routes);
 
 document.addEventListener('DOMContentLoaded', function (event){
     new Promise(function (resolve, reject){
-        let category = document.getElementById('category')
-        let data = {
-            "sort_by_price": {
-                "min": document.getElementById('minNum').value,
-                "max": document.getElementById('maxNum').value
-            },
-            "sort_by_category":{
-                "name": category[category.selectedIndex].value
-            }
-        }
-        let formData = new FormData()
-        formData.append('data', JSON.stringify(data));
-        xhr(resolve, reject , Routing.generate('getGoods'), 'POST', formData);
+        xhr(resolve, reject , Routing.generate('getGoods'), 'POST','');
     })
         .then((response) => {
             while (goods.lastElementChild) {
@@ -50,18 +38,7 @@ document.addEventListener('click', function (event){
                 setTimeout(() => {target.value = "Add"}, 2000);
             })
     }
-    // if(target.type === "button" && target.id === "buttonRemove" && isNaN(parseInt(Number(target.dataset.id))) === false)
-    // {
-    //     new Promise(function (resolve, reject) {
-    //         let formData = new FormData()
-    //         formData.append('id', Number(target.dataset.id))
-    //         xhr(resolve, reject, Routing.generate('removeGood', {id: target.dataset.id}), 'POST', formData);
-    //     })
-    //         .then((response) => {
-    //             let good = document.getElementById('good_'+Number(target.dataset.id))
-    //             good.parentNode.removeChild(good)
-    //         })
-    // }
+
 
     if(target.type === "button" && target.id === "buttonSort")
     {
@@ -93,21 +70,21 @@ document.addEventListener('click', function (event){
     }
 })
 
-function Insert(data){
+function Insert(data) {
     let form = document.createElement('form')
     form.method = "POST";
-    form.id = "good_"+data.id;
+    form.id = "good_" + data.id;
 
     let good = document.createElement('h4');
-    good.setAttribute('id', "goodName_"+data.id)
+    good.setAttribute('id', "goodName_" + data.id)
     good.appendChild(document.createTextNode(data.name + " (" + data.id + ")"));
 
     let stuff = document.createElement('p');
-    stuff.setAttribute('id', "goodStuff_"+data.id)
-    stuff.appendChild(document.createTextNode('Color - '+ data.color + ', Price - ' + data.price + "$" + ", Count - " + data.count))
+    stuff.setAttribute('id', "goodStuff_" + data.id)
+    stuff.appendChild(document.createTextNode('Color - ' + data.color + ', Price - ' + data.price + "$" + ", Count - " + data.count))
 
     let description = document.createElement('p');
-    description.setAttribute('id', "goodDescription_"+data.id)
+    description.setAttribute('id', "goodDescription_" + data.id)
     if (data.description.length === 0)
         description.appendChild(document.createTextNode("This good dont have description"))
     else
@@ -115,14 +92,14 @@ function Insert(data){
 
     let num = document.createElement('input');
     num.type = 'number';
-    num.setAttribute('id', "goodNum_"+data.id)
+    num.setAttribute('id', "goodNum_" + data.id)
     num.setAttribute('class', 'width: 70px')
     num.setAttribute('value', 0)
     num.setAttribute('min', 1)
     num.setAttribute('max', data.count)
 
     let category = document.createElement('p');
-    category.setAttribute('id', "goodCategory_"+data.id)
+    category.setAttribute('id', "goodCategory_" + data.id)
     if (data.category != null)
         category.appendChild(document.createTextNode("Category - " + data.category.categoryName));
     else
@@ -144,30 +121,6 @@ function Insert(data){
     form.appendChild(button)
     form.appendChild(document.createElement('hr'))
     goods.appendChild(form);
-
-    // let good = document.getElementById('good_'+data.id)
-    // let name = document.getElementById('goodName_'+data.id);
-    // name.innerText = data.name;
-    // let stuff = document.getElementById('goodStuff_'+data.id);
-    // stuff.innerText = 'Color - '+ data.color + ', Price - ' + data.price + "$" + ", Count - " + data.count;
-    //
-    // let description = document.getElementById('goodDescription_'+data.id);
-    // if (data.description.length === 0)
-    //     description.innerText = 'This good dont have description';
-    // else
-    //     description.innerText = 'Description - ' + data.description;
-    //
-    // let button = document.createElement('input')
-    // button.setAttribute('type', 'button')
-    // button.setAttribute('value', 'Add')
-    // button.setAttribute('id', data.id)
-    // button.setAttribute('class', 'buttonAdd')
-    // if (data.count === 0)
-    //     button.disabled = true;
-    // good.appendChild(button)
-    // good.appendChild(document.createElement('hr'));
-    //
-    // good.style.display = 'inherit'
 }
 
 function xhr(resolve, reject, url, method, formData){

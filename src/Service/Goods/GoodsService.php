@@ -25,7 +25,6 @@ class GoodsService
     private $sort;
 
     public function __construct(GoodsRepository $goodsRepository, SessionInterface $session)
-//    public function __construct()
     {
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
@@ -34,70 +33,33 @@ class GoodsService
 
         $goodsTemp = $this->goodsRepository->findAll();
         $goods = [];
-        foreach ($goodsTemp as $value){
+        foreach ($goodsTemp as $value) {
             array_push($goods, $this->serializer->normalize($value, null,
                 [AbstractNormalizer::ATTRIBUTES =>
-                    ['id','name','price','color','description','count', 'category' => ['categoryName']]]));
+                    ['id', 'name', 'price', 'color', 'description', 'count', 'category' => ['categoryName']]]));
         }
         $this->goods = $goods;
     }
 
     public function sortAll($sort_data): string
     {
-        $this->goods = $this->priceSort($sort_data);
-        $this->goods = $this->categorySort($sort_data);
+        if (count($sort_data) != null) {
+            $this->goods = $this->priceSort($sort_data);
+            $this->goods = $this->categorySort($sort_data);
+        }
         return $this->serializer->serialize($this->goods, 'json');
     }
 
-    public function priceSort($sort_data):array
+
+    public function priceSort($sort_data): array
     {
         $array = new PriceSort();
-        return $array->sort($sort_data,$this->goods);
+        return $array->sort($sort_data, $this->goods);
     }
 
-    public function categorySort($sort_data):array
+    public function categorySort($sort_data): array
     {
         $array = new CategorySort();
         return $array->sort($sort_data, $this->goods);
     }
-
-//    public function show($data)
-//    {
-//
-//        $sort_by_price = [];
-//        $sort_by_category = [];
-//        if (count($data) > 0){
-//            if ($price_data = $data['sort_by_price']){
-//                if ($price_data['min'] != 0 && $price_data['max'] != 0){
-//                    foreach ($goods_all as $value){
-//                        if ($price_data['min'] <= $value['price'] && $price_data['max'] >= $value['price']){
-//                            unset($value['category']);
-//                            array_push($sort_by_price, $value);
-//                        }
-//                    }
-//                }
-//            }
-//$sort_by_category = [];
-
-//            if ($category_data = $data['sort_by_category']){
-//                if ($category_data['name'] != "None"){
-//                    foreach ($goods_all as $value){
-//                        if ($value['category'] != null){
-//                            if ($category_data['name'] == $value['category']['categoryName']){
-//                                unset($value['category']);
-//                                array_push($sort_by_category, $value);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        dump($sort_by_price);
-//        dump($sort_by_category);
-//        dump(array_count_values(array_diff($sort_by_price[2], $sort_by_category[0])));
-////        else
-////            $res = $goods_all;
-////        dump($res);
-////        return $serializer->serialize($res, 'json');
-//    }
 }

@@ -24,12 +24,10 @@ use Symfony\Component\Serializer\Serializer;
 
 class GoodsController extends AbstractController
 {
-    private $manager;
     private $goods;
     private $categories;
-    public function __construct(EntityManagerInterface $manager, GoodsRepository $goods, CategoryRepository $categories)
+    public function __construct(GoodsRepository $goods, CategoryRepository $categories)
     {
-        $this->manager = $manager;
         $this->goods = $goods;
         $this->categories = $categories;
     }
@@ -57,8 +55,6 @@ class GoodsController extends AbstractController
      */
     public function getGoods(Request $request, GoodsService $service)
     {
-//        $array = new GoodsService(new PriceSort($request->request->get('data')));
-
         if ($request->isXmlHttpRequest()){
             return new JsonResponse($service->sortAll((array)json_decode($request->request->get('data'),true))
                 ,200, [], true);
