@@ -57,19 +57,12 @@ class CartController extends AbstractController
      */
     public function add(Request $request, Cart $cart): JsonResponse
     {
-        $res = false;
-        $productId = null;
-
-        if ($request->isXmlHttpRequest()){
-            $productId = $request->get('id');
-            $amount = $request->get('amount');
-            $res = $cart->add([
-                'product_id' => $productId,
-                'amount' => $amount
-            ]);
+        $res = $cart->add([
+            'product_id' => json_decode($request->getContent(),true)['id'],
+            'amount' => json_decode($request->getContent(),true)['amount']
+        ]);
             $cart->save();
-        }
-        return $res ? new JsonResponse(["id" => $productId]) :
+        return $res ? new JsonResponse(json_decode($request->getContent(),true)['id']) :
             new JsonResponse(["ERROR" => "Incorrect JSON"]);
     }
 

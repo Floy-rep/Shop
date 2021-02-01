@@ -4,24 +4,20 @@
 namespace App\Service\Goods\Sort;
 
 
+use Doctrine\ORM\QueryBuilder;
+
 class CategorySort implements SortInterface
 {
-    public function sort($sort_data, $data): array
+    public function filter($filters, $qb)
     {
-        $sort_by_category = [];
-        $sort_by = $sort_data['sort_by_category']['name'];
-        if ($sort_by != "None") {
-            if (!empty($data)) {
-                foreach ($data as $value) {
-                    if ($value['category'] != null) {
-                        if ($sort_by == $value['category']['categoryName']) {
-                            array_push($sort_by_category, $value);
-                        }
-                    }
-                }
-            }
+        /**
+         * @var $qb QueryBuilder
+         */
+        if (array_key_exists('category', (array)$filters)) {
+            $qb->join('goods.category', 'category');
+            $qb->andWhere('category.category_name = :name');
+            $qb->setParameter("name", $filters['category']);
         } else
-            $sort_by_category = $data;
-        return $sort_by_category;
+            $qb->leftJoin('goods.category', 'category');
     }
 }

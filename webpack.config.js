@@ -24,7 +24,6 @@ Encore
     .addEntry('cart', './assets/cart.js')
     .addEntry('admin', './assets/admin.js')
     .addEntry('global', './assets/global.js')
-    // .addStyleEntry('app', './assets/styles/app.css')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
@@ -60,7 +59,7 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()

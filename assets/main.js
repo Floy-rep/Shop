@@ -1,139 +1,91 @@
-import './styles/app.css';
-let Routing = require("../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router");
+import './styles/test.scss';
+
+
+const Routing = require("../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router");
 let Routes = require('./js-routes.json');
 let goods = document.getElementById('goods');
-
+const axios = require('axios');
 Routing.setRoutingData(Routes);
 
-document.addEventListener('DOMContentLoaded', function (event){
-    new Promise(function (resolve, reject){
-        xhr(resolve, reject , Routing.generate('getGoods'), 'POST','');
+let filters = {};
+
+document.addEventListener('DOMContentLoaded', function (event) {
+    axios.post(Routing.generate('getGoods'), {
+        filters
     })
-        .then((response) => {
-            while (goods.lastElementChild) {
-                goods.removeChild(goods.lastElementChild);
-            }
-            for (let i = 0; i < response.length; i++){
-                Insert(response[i]);
-            }
-        })
-        .catch((error) => {
-            console.log(error)
+        .then(function (response) {
+                Insert(response.data)
         })
 })
 
-document.addEventListener('click', function (event){
+document.addEventListener('click', function (event) {
     let target = event.target;
-    if(target.type === "button" && target.className === "buttonAdd" && isNaN(parseInt(target.id)) === false)
-    {
-        new Promise(function (resolve, reject) {
-            let formData = new FormData()
-            let count = document.getElementById('goodNum_'+target.id)
-            formData.append('id', target.id)
-            formData.append('amount', count.value)
-            xhr(resolve, reject, Routing.generate('addToCard', {id: target.id}), 'POST', formData);
-        })
-            .then((response) => {
-                target.value = 'Added';
-                setTimeout(() => {target.value = "Add"}, 2000);
+    if (target.type === "button" && target.className === "buttonAdd" && isNaN(parseInt(target.id)) === false) {
+        let count = document.getElementById('goodAmount_' + target.id)
+        if (count.value > 0) {
+            axios.post(Routing.generate('addToCard', {id: target.id}), {
+                'id': target.id,
+                'amount': count.value
             })
+                .then(function (response) {
+                    target.value = 'Added';
+                    setTimeout(() => {
+                        target.value = "Add"
+                    }, 2000);
+                })
+        } else {
+            let error = document.getElementById('error_' + target.id)
+            error.style.display = 'inherit'
+            setTimeout(() => {
+                error.style.display = 'none'
+            }, 2000);
+        }
     }
 
 
-    if(target.type === "button" && target.id === "buttonSort")
-    {
-        new Promise(function (resolve, reject) {
-            let formData = new FormData()
-            let category = document.getElementById('category')
-            let data = {
-                    "sort_by_price": {
-                        "min": document.getElementById('minNum').value,
-                        "max": document.getElementById('maxNum').value
-                    },
-                    "sort_by_category":{
-                        "name": category[category.selectedIndex].value
-                    }
-                }
-            formData.append('data', JSON.stringify(data));
-            xhr(resolve, reject, Routing.generate('getGoods'), 'POST', formData);
+    if (target.type === "button" && target.id === "buttonSort") {
+        let category = document.getElementById('category')
+        axios.post(Routing.generate('getGoods'), {
+            filters
         })
-            .then((response) => {
+            .then(function (response) {
                 target.value = 'Sorted';
-                setTimeout(() => {target.value = "Sort"}, 2000);
-                while (goods.lastElementChild) {
-                    goods.removeChild(goods.lastElementChild);
-                }
-                for (let i = 0; i < response.length; i++){
-                    Insert(response[i]);
-                }
+                setTimeout(() => {
+                    target.value = "Sort"
+                }, 2000);
+                Insert(response.data)
             })
     }
 })
 
-function Insert(data) {
-    let form = document.createElement('form')
-    form.method = "POST";
-    form.id = "good_" + data.id;
+let category = document.getElementById('category')
+category.addEventListener('change', function (event){
+    filters["category"] = category[category.selectedIndex].value
+})
 
-    let good = document.createElement('h4');
-    good.setAttribute('id', "goodName_" + data.id)
-    good.appendChild(document.createTextNode(data.name + " (" + data.id + ")"));
+let minPrice = document.getElementById('minNum')
+minPrice.addEventListener('change', function (event){
+    filters['price'] = {
+        'min': minPrice.value,
+        'max' : filters.price.max
+    }
+})
 
-    let stuff = document.createElement('p');
-    stuff.setAttribute('id', "goodStuff_" + data.id)
-    stuff.appendChild(document.createTextNode('Color - ' + data.color + ', Price - ' + data.price + "$" + ", Count - " + data.count))
+let maxPrice = document.getElementById('maxNum')
+maxPrice.addEventListener('change', function (event){
+    filters['price'] = {
+        'min': filters.price.min,
+        'max' : maxPrice.value
+    }
+})
 
-    let description = document.createElement('p');
-    description.setAttribute('id', "goodDescription_" + data.id)
-    if (data.description.length === 0)
-        description.appendChild(document.createTextNode("This good dont have description"))
-    else
-        description.appendChild(document.createTextNode('Description - ' + data.description))
-
-    let num = document.createElement('input');
-    num.type = 'number';
-    num.setAttribute('id', "goodNum_" + data.id)
-    num.setAttribute('class', 'width: 70px')
-    num.setAttribute('value', 0)
-    num.setAttribute('min', 1)
-    num.setAttribute('max', data.count)
-
-    let category = document.createElement('p');
-    category.setAttribute('id', "goodCategory_" + data.id)
-    if (data.category != null)
-        category.appendChild(document.createTextNode("Category - " + data.category.categoryName));
-    else
-        category.appendChild(document.createTextNode('Category is undefinded'));
-
-    let button = document.createElement('input')
-    button.setAttribute('type', 'button')
-    button.setAttribute('value', 'Add')
-    button.setAttribute('id', data.id)
-    button.setAttribute('class', 'buttonAdd')
-    if (data.count === 0)
-        button.disabled = true;
-
-    form.appendChild(good);
-    form.appendChild(stuff)
-    form.appendChild(description)
-    form.appendChild(num)
-    form.appendChild(category)
-    form.appendChild(button)
-    form.appendChild(document.createElement('hr'))
-    goods.appendChild(form);
+function Insert(data){
+    while (goods.lastElementChild)
+        goods.removeChild(goods.lastElementChild);
+    for (let i = 0; i < data.length; i++) {
+        let form = document.createElement('form')
+        form.innerHTML = data[i]
+        goods.appendChild(form)
+    }
 }
 
-function xhr(resolve, reject, url, method, formData){
-    let xhr = new XMLHttpRequest();
-    xhr.open(method, url);
-    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    xhr.addEventListener('load', function (event) {
-        if (this.readyState === 4) {
-            if (this.status === 200 && this.statusText === "OK")
-                resolve(JSON.parse(this.responseText));
-            else
-                reject("ERROR");
-        }
-    })
-    xhr.send(formData);
-}

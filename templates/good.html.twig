@@ -1,0 +1,18 @@
+{% block body %}
+<div id="good_{{ good.id }}">
+    <h3>{{ good.name }}</h3>
+    <p>Color - {{ good.color }}, Price - {{ good.price }}$, Count - {{ good.count }} goods</p>
+    <p>Description - {{ good.description }}</p>
+    <label for="goodAmount_{{ good.id }}">Amount</label>
+    <input type="number" value="0" min="0" max="{{ good.count }}" name="goodAmount" id="goodAmount_{{ good.id }}">
+    <label for="buttonAdd_{{ good.id }}"></label>
+    <input type="button" id="{{ good.id }}" class="buttonAdd" name="buttonAdd" value="Add">
+    {% if good.categoryName is defined and good.categoryName != '' %}
+        <p>Category - {{ good.categoryName }}</p>
+    {% else %}
+        <p>Category is empty</p>
+    {% endif %}
+    <p id="error_{{ good.id }}" style="display: none; color: red">Cant take 0 good</p>
+    <hr>
+</div>
+{% endblock %}

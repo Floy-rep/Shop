@@ -1,7 +1,6 @@
-import './styles/app.css';
-
 let Routing = require("../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router");
 let Routes = require('./js-routes.json');
+const  axipos = require('aixos')
 Routing.setRoutingData(Routes);
 
 document.addEventListener('DOMContentLoaded', function (event){
