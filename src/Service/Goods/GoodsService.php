@@ -4,9 +4,14 @@ namespace App\Service\Goods;
 
 use App\Entity\Goods;
 use App\Repository\GoodsRepository;
-use App\Service\Goods\Sort\CategorySort;
+use App\Service\Goods\Filter\CategoryFilter;
+use App\Service\Goods\Filter\CountFilter;
+use App\Service\Goods\Filter\Filter;
+use App\Service\Goods\Filter\PriceFilter;
+use App\Service\Goods\Filter\FilterInterface;
+use App\Service\Goods\Sort\CountSort;
 use App\Service\Goods\Sort\PriceSort;
-use App\Service\Goods\Sort\SortInterface;
+use App\Service\Goods\Sort\Sort;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -19,61 +24,43 @@ use Symfony\Component\Serializer\Serializer;
 
 class GoodsService
 {
-    private $goods;
-    private $goodsRepository;
-    private $serializer;
-    private $session;
-    private $sort;
     private $manager;
     private $filters;
+    private $sorts;
 
-    public function __construct(EntityManagerInterface $manager, SessionInterface $session)
+    private $sortService;
+    private $filterService;
+
+    public function __construct(EntityManagerInterface $manager, Sort $sortService, Filter $filterService)
     {
-        $encoder = [new JsonEncoder()];
-        $normalizer = [new ObjectNormalizer()];
-        $this->serializer = new Serializer($normalizer, $encoder);
-
         $this->manager = $manager;
-//        $this->goodsRepository = $goodsRepository;
-
-//        $goodsTemp = $this->goodsRepository->findAll();
-//        $goods = [];
-//        foreach ($goodsTemp as $value) {
-//            array_push($goods, $this->serializer->normalize($value, null,
-//                [AbstractNormalizer::ATTRIBUTES =>
-//                    ['id', 'name', 'price', 'color', 'description', 'count', 'category' => ['categoryName']]]));
-//        }
-//        $this->goods = $goods;
+        $this->sortService = $sortService;
+        $this->filterService = $filterService;
     }
 
-    public function filterAll($filters): array
+    public function doActions($request): array
     {
         /**
          * @var $goodsRepository GoodsRepository
          */
-        $this->filters = $filters['filters'];
+        $this->findData($request);
         $goodsRepository = $this->manager->getRepository(Goods::class);
         $qb = $goodsRepository->createQueryBuilder('goods');
         $qb->select(
             'goods.id, goods.name, goods.price, goods.color, goods.description, goods.count, 
             category.category_name AS categoryName'
         );
-        $this->priceFilter($qb);
-        $this->categoryFilter($qb);
+        $this->filterService->filterAll($qb, $this->filters);
+        $this->sortService->sortAll($qb, $this->sorts);
+
         return $qb->getQuery()->getResult();
-//        return $this->serializer->serialize($this->goods, 'json');
     }
 
-
-    public function priceFilter($qb)
+    public function findData($request)
     {
-        $filter = new PriceSort();
-        $filter->filter($this->filters, $qb);
-    }
-
-    public function categoryFilter($qb)
-    {
-        $filter = new CategorySort();
-        $filter->filter($this->filters, $qb);
+        if (array_key_exists('filters', $request))
+            $this->filters = $request['filters'];
+        if (array_key_exists('sorts', $request))
+            $this->sorts = $request['sorts'];
     }
 }

@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Repository\OrderGoodRepository;
-use App\Service\RemoveFromCart;
-use App\Service\ShowCart;
+//use App\Service\RemoveFromCart;
+//use App\Service\ShowCart;
 use App\Service\Goods;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +20,15 @@ use App\Service\Cart\Cart;
 
 class CartController extends AbstractController
 {
+    private $serializer;
+    public function __construct()
+    {
+        $encoder = [new JsonEncoder()];
+        $normalizer = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($normalizer, $encoder);
+    }
+
+
     /**
      * @Route("/cart", name="cart")
      */
@@ -38,15 +47,10 @@ class CartController extends AbstractController
      */
     public function getGoods(Request $request, Cart $cart)
     {
-        $encoder = [new JsonEncoder()];
-        $normalizer = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizer, $encoder);
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse($serializer->serialize($cart->getItems(), 'json'), 200, [], true);
-        }
-        return new JsonResponse([
-            "ERROR" => "Incorrect JSON"
-        ]);
+        $res = [];
+        foreach($cart->getItems() as $value)
+            array_push($res, $this->renderView('cart.html.twig',['good' => $value]));
+        return new JsonResponse($this->serializer->serialize($res, 'json'), 200, [], true);
     }
 
     /**
@@ -68,24 +72,17 @@ class CartController extends AbstractController
 
     /**
      * @Route("/removefromcart/{id}", name="removeFromCart", methods={"POST"}, options={"expose" = true})
+     * @param Request $request
+     * @param Cart $cart
+     * @return JsonResponse
      */
     public function removeFromCart(Request $request, Cart $cart): JsonResponse
     {
-        $res = false;
-        $productId = null;
-        if ($request->isXmlHttpRequest())
-        {
-            $productId = $request->get('id');
-            $res = $cart->remove($productId);
-            $cart->save();
-            return new JsonResponse((string)$res, 200, [], true);
-        }
-        return $res ? new JsonResponse(["id" => $productId]) :
-            new JsonResponse(["ERROR" => "Incorrect JSON"]);
+        $id = json_decode($request->getContent(), true)['id'];
+        $cart->remove($id);
+        $cart->save();
+        return new JsonResponse($this->serializer->serialize
+        ($id, 'json'), 200, [], true);
     }
 
-    public function getCartItems(Cart $cart)
-    {
-        return new JsonResponse($cart->getItems());
-    }
 }

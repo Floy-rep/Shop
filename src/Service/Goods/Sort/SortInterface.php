@@ -6,5 +6,5 @@ namespace App\Service\Goods\Sort;
 
 interface SortInterface
 {
-    public function filter($filters, $qb);
+    public function sort($sorts, $qb);
 }

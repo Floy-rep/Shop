@@ -6,7 +6,7 @@ namespace App\Service\Goods\Sort;
 
 use Doctrine\ORM\QueryBuilder;
 
-class PriceSort implements SortInterface
+class CountSort implements SortInterface
 {
     public function sort($sorts, $qb)
     {
@@ -14,7 +14,7 @@ class PriceSort implements SortInterface
          * @var $qb QueryBuilder
          */
         if (array_key_exists('type', (array)$sorts))
-            if ($sorts['type'] == 'price')
-                $qb->orderBy('goods.price', $sorts['order']);
+            if ($sorts['type'] == 'count')
+                $qb->orderBy('goods.count', $sorts['order']);
     }
 }

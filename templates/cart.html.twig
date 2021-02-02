@@ -1,0 +1,17 @@
+{% block body %}
+    <div id="good_{{ good.id }}">
+        <h3>{{ good.name }}</h3>
+        <p>Color - {{ good.color }}, Price - {{ good.price }}$, Count - {{ good.count }} goods</p>
+        <p>Description - {{ good.description }}</p>
+        <p>You take - {{ good.amount }} goods</p>
+        <label for="buttonRemove_{{ good.id }}"></label>
+        {% if not good.categoryName == null %}
+            <p>Category - {{ good.categoryName }}</p>
+        {% else %}
+            <p>Category is empty</p>
+        {% endif %}
+        <input type="button" id="{{ good.id }}" class="buttonRemove" name="buttonRemove" value="Remove">
+        <hr>
+    </div>
+{% endblock %}
+

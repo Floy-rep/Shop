@@ -11,7 +11,7 @@ use App\Repository\OrderGoodRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 use App\Service\Goods\GoodsService;
-use App\Service\Goods\Sort\PriceSort;
+use App\Service\Goods\Filter\PriceFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\AST\Functions\AvgFunction;
 use Doctrine\ORM\QueryBuilder;
@@ -57,42 +57,14 @@ class GoodsController extends AbstractController
         /**
          * @var GoodsRepository $goodsRepository
          */
-//        $goodsRepository = $manager->getRepository(Goods::class);
-//        $qb = $goodsRepository->createQueryBuilder('goods');
-//        $qb->select('goods.name, category.category_name AS categoryName, goods.price');
-//        $qb->join('goods.category','category');
-//        $this->categoryFilter($qb, 2);
-//        $this->priceFilter($qb, 2,6);
-//        $goods = $qb->getQuery()->getResult();
-//        dump($goods);
-
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizer, $encoder);
-        $data = $service->filterAll(json_decode($request->getContent(), true));
+        $data = $service->doActions(json_decode($request->getContent(), true));
         $res = [];
         foreach ($data as $value)
             array_push($res, $this->renderView('good.html.twig', ['good' => $value]));
         return new JsonResponse($serializer->serialize($res, 'json'), 200, [], true);
     }
 
-    public function categoryFilter($qb, $int){
-        /**
-         * @var $qb QueryBuilder
-         */
-        $qb
-        ->andWhere('category.id = :category_id')
-        ->setParameter('category_id', $int);
-    }
-
-    public function priceFilter($qb, $min, $max){
-        /**
-         * @var $qb QueryBuilder
-         */
-        $qb
-            ->andWhere('goods.price >= :min_price')
-            ->andWhere('goods.price <= :max_price')
-            ->setParameter('min_price', $min)
-            ->setParameter('max_price', $max);
-    }
 }

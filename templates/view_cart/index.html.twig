@@ -7,19 +7,10 @@
 <div class="example-wrapper">
     <h1>Cart ✅</h1>
     <a href="{{ path('viewGoods') }}">Back to Shop</a>
-    {% for item in cart %}
-        <form method="POST" id="item_{{ item.id }}" style="display: none" >
-            <div class="item">
-                <h4 id="itemName_{{ item.id}}"></h4>
-                <span style="display: none" class="id">{{ item.id }}</span>
-                <p id="itemStuff_{{ item.id}}"></p>
-                <p id="itemTaken_{{ item.id }}"></p>
-                <p id="itemDescription_{{ item.id }}"></p>
-                <p id="itemCategory_{{ item.id }}"></p>
-                <input type="button" value="Remove" class="buttonRemove" id="{{item.id}}">
-            </div>
-        </form>
-    {% endfor %}
+
+    <div id="goods">
+    </div>
+
     {% block javascripts %}
         {{ encore_entry_script_tags('cart') }}
     {% endblock %}

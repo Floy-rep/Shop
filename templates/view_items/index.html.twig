@@ -20,22 +20,39 @@
         <a href="{{ path('app_register') }}">Sign up</a>
         <a href="{{ path('app_login') }}">Sign In</a>
     {% endif %}
-    
-    <form method="post">
-        <h2>Sort by price</h2>
-        <label for="minNum">Min Price</label>
-        <input type="number" name="minNum" id="minNum" value="0" min="0" max="9999">
-        <label for="maxNum">Max Price</label>
-        <input type="number" name="maxNum" id="maxNum" value="0" min="0" max="9999"><br>
-        <label for="category">Category</label>
-        <select name="category" id="category" style="width: 250px;">
-            <option value="None">None</option>
-            {% for category in categories %}
-                <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select><br>
-        <input type="button" id="buttonSort" value="Sort">
-    </form>
+
+    <div class="nav" style="display: flex; flex-direction: row">
+        <form method="post" style="width: 50%">
+            <h2>Filter</h2>
+            <label for="minNum">Min Price</label>
+            <input type="number" name="minNum" id="minNum" value="0" min="0" max="9999">
+            <label for="maxNum">Max Price</label>
+            <input type="number" name="maxNum" id="maxNum" value="0" min="0" max="9999"><br>
+            <label for="minCount">Min Count</label>
+            <input type="number" name="minCount" id="minCount" value="0" min="1" max="9999">
+            <label for="category">Category</label>
+            <select name="category" id="category" style="width: 250px;">
+                <option value="None">None</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select><br>
+            <input type="button" id="buttonFilter" value="Filter">
+            <label for="clearFilter"></label>
+            <input type="button" id="clearFilter" value="Clear">
+        </form>
+        <form method="post" style="width: 50%;">
+            <h2>Sort</h2>
+            <label for="priceSort"></label>
+            <input type="button" id="priceSort" value="Sort by price" data-sort="ASC">
+
+            <label for="countSort"></label>
+            <input type="button" id="countSort" value="Sort by count" data-sort="ASC">
+
+            <label for="clearSort"></label>
+            <input type="button" id="clearSort" value="Clear">
+        </form>
+    </div>
 
     <div id="goods">
 

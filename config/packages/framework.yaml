@@ -1,7 +1,7 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     serializer:
-      circular_reference_handler: App\Utils\CircularReferenceHandler
+#      circular_reference_handler: App\Utils\CircularReferenceHandler
 
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
