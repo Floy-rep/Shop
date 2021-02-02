@@ -3,34 +3,28 @@
 
 namespace App\Service\Goods\Filter;
 
+use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class Filter
 {
-    private $filters;
+    private $filterLocator;
 
-    public function filterAll($qb, $filters)
+    /**
+     * Filter constructor.
+     * @param ServiceLocator $filterLocator
+     */
+    public function __construct(ServiceLocator $filterLocator)
     {
-        $this->filters = $filters;
-        $this->priceFilter($qb);
-        $this->categoryFilter($qb);
-        $this->countFilter($qb);
+        $this->filterLocator = $filterLocator;
     }
 
-    public function priceFilter($qb)
+    public function applyFilter($filterData, $qb)
     {
-        $filter = new PriceFilter();
-        $filter->filter($this->filters, $qb);
-    }
+        $classes = array_keys($this->filterLocator->getProvidedServices());
 
-    public function categoryFilter($qb)
-    {
-        $filter = new CategoryFilter();
-        $filter->filter($this->filters, $qb);
-    }
+        foreach ($classes as $filterClass) {
 
-    public function countFilter($qb)
-    {
-        $filter = new CountFilter();
-        $filter->filter($this->filters, $qb);
+            $this->filterLocator->get($filterClass)->filter($filterData, $qb);
+        }
     }
 }

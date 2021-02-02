@@ -50,7 +50,11 @@ class GoodsService
             'goods.id, goods.name, goods.price, goods.color, goods.description, goods.count, 
             category.category_name AS categoryName'
         );
-        $this->filterService->filterAll($qb, $this->filters);
+
+        //$qb->select('goods, goods.category');
+        //$qb->leftJoin('goods.category', 'category');
+
+        $this->filterService->applyFilter($this->filters, $qb);
         $this->sortService->sortAll($qb, $this->sorts);
 
         return $qb->getQuery()->getResult();

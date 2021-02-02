@@ -17,6 +17,8 @@ class CategoryFilter implements FilterInterface
             $qb->join('goods.category', 'category');
             $qb->andWhere('category.category_name = :name');
             $qb->setParameter("name", $filters['category']);
+            //$qb->andWhere('goods.category = :categoryId');
+            //$qb->setParameter("categoryId", $filters['category']);
         } else
             $qb->leftJoin('goods.category', 'category');
     }
