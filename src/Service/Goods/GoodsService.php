@@ -15,6 +15,7 @@ use App\Service\Goods\Sort\Sort;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -54,6 +55,8 @@ class GoodsService
         $this->sortService->sortAll($qb, $this->sorts);
 
         return $qb->getQuery()->getResult();
+        // TODO paginate all query
+//        $this->paginate($qb->getQuery());
     }
 
     public function findData($request)
@@ -62,5 +65,16 @@ class GoodsService
             $this->filters = $request['filters'];
         if (array_key_exists('sorts', $request))
             $this->sorts = $request['sorts'];
+    }
+
+    public function paginate($dql, $page = 1, $limit = 5)
+    {
+        $paginator = new Paginator($dql);
+
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($page - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+
+        return $paginator;
     }
 }

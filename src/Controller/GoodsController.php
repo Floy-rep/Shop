@@ -36,11 +36,11 @@ class GoodsController extends AbstractController
 
     /**
      * @Route("/", name="viewGoods", methods={"GET"})
+     * @param Request $request
      * @return Response
      */
     public function viewGoods(Request $request): Response
     {
-
         return $this->render('view_items/index.html.twig', [
             "categories" => $this->manager->getRepository(Category::class)->findAll()
         ]);
@@ -52,7 +52,7 @@ class GoodsController extends AbstractController
      * @param GoodsService $service
      * @return Response
      */
-    public function getGoods(Request $request, GoodsService $service, EntityManagerInterface $manager)
+    public function getGoods(Request $request, GoodsService $service)
     {
         /**
          * @var GoodsRepository $goodsRepository
