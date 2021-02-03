@@ -39,7 +39,7 @@ class GoodsService
         $this->filterService = $filterService;
     }
 
-    public function doActions($request): array
+    public function doActions($request)
     {
         /**
          * @var $goodsRepository GoodsRepository
@@ -47,20 +47,20 @@ class GoodsService
         $this->findData($request);
         $goodsRepository = $this->manager->getRepository(Goods::class);
         $qb = $goodsRepository->createQueryBuilder('goods');
-        $qb->select(
-            'goods.id, goods.name, goods.price, goods.color, goods.description, goods.count, 
-            category.category_name AS categoryName'
-        );
-
-        //$qb->select('goods, goods.category');
-        //$qb->leftJoin('goods.category', 'category');
+        $qb->select('goods');
+        $qb->leftJoin('goods.category', 'category');
 
         $this->filterService->applyFilter($this->filters, $qb);
-        $this->sortService->sortAll($qb, $this->sorts);
+        $this->sortService->applySort($this->sorts, $qb);
 
-        return $qb->getQuery()->getResult();
-        // TODO paginate all query
-//        $this->paginate($qb->getQuery());
+        // ------- PAGINATOR ------- //
+        $paginator = new Paginator($qb->getQuery());
+        $limit = 5;
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($request['page'] - 1))
+            ->setMaxResults($limit);
+
+        return $paginator;
     }
 
     public function findData($request)

@@ -21,10 +21,8 @@ class Filter
     public function applyFilter($filterData, $qb)
     {
         $classes = array_keys($this->filterLocator->getProvidedServices());
-
-        foreach ($classes as $filterClass) {
-
-            $this->filterLocator->get($filterClass)->filter($filterData, $qb);
-        }
+        foreach ($classes as $filterClass)
+            if ($this->filterLocator->get($filterClass)->canFilter($filterData))
+                $this->filterLocator->get($filterClass)->filter($filterData, $qb);
     }
 }

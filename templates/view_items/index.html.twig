@@ -1,47 +1,55 @@
 {% extends 'base.html.twig' %}
 {% block title %}Hello ViewItemsController!{% endblock %}
+{% block stylesheeh %}{{ encore_entry_link_tags('scss')}} {% endblock %}
 
 {% block body %}
 
 <div class="example-wrapper">
     <h1>Hello its a shop! ✅</h1>
     {% if app.user %}
-        <h2>Auth as {{app.user.username}}</h2>
+        <h2 class="login">Auth as {{app.user.username}}</h2>
     {% endif %}
 
-    <a href="{{ path('cart') }}">My cart</a>
-
-    {% if app.user %}
-        <a href="{{ path('app_logout') }}">Logout</a>
-        {% if is_granted("ROLE_ADMIN") %}
-            <a href="{{ path('admin') }}">Admin panel</a>
+    <div class="links">
+        <a class="links__link" href="{{ path('cart') }}">My cart</a>
+        {% if app.user %}
+            <a href="{{ path('app_logout') }}" class="links__link">Logout</a>
+            {% if is_granted("ROLE_ADMIN") %}
+                <a href="{{ path('admin') }}" class="links__link">Admin panel</a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('app_register') }}" class="links__link">Sign up</a>
+            <a href="{{ path('app_login') }}" class="links__link">Sign In</a>
         {% endif %}
-    {% else %}
-        <a href="{{ path('app_register') }}">Sign up</a>
-        <a href="{{ path('app_login') }}">Sign In</a>
-    {% endif %}
+    </div>
 
-    <div class="nav" style="display: flex; flex-direction: row">
-        <form method="post" style="width: 50%">
+    <div class="nav">
+        <form method="post" class="filter">
             <h2>Filter</h2>
-            <label for="minNum">Min Price</label>
-            <input type="number" name="minNum" id="minNum" value="0" min="0" max="9999">
-            <label for="maxNum">Max Price</label>
-            <input type="number" name="maxNum" id="maxNum" value="0" min="0" max="9999"><br>
-            <label for="minCount">Min Count</label>
-            <input type="number" name="minCount" id="minCount" value="0" min="1" max="9999">
-            <label for="category">Category</label>
-            <select name="category" id="category" style="width: 250px;">
-                <option value="None">None</option>
-                {% for category in categories %}
-                    <option value="{{ category }}">{{ category }}</option>
-                {% endfor %}
-            </select><br>
-            <input type="button" id="buttonFilter" value="Filter">
-            <label for="clearFilter"></label>
-            <input type="button" id="clearFilter" value="Clear">
+            <div class="filter__form">
+                <div class="filter__input">
+                    <label for="minNum">Min Price</label>
+                    <input type="number" name="minNum" id="minNum" value="0" min="0" max="9999">
+                    <label for="maxNum">Max Price</label>
+                    <input type="number" name="maxNum" id="maxNum" value="0" min="0" max="9999">
+                    <label for="minCount">Min Count</label>
+                    <input type="number" name="minCount" id="minCount" value="0" min="1" max="9999">
+                    <label for="category">Category</label>
+                    <select name="category" id="category" style="width: 250px;">
+                        <option value="None">None</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}" id="{{ category.id }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter__buttons">
+                    <input type="button" id="buttonFilter" value="Filter">
+                    <label for="clearFilter"></label>
+                    <input type="button" id="clearFilter" value="Clear">
+                </div>
+            </div>
         </form>
-        <form method="post" style="width: 50%;">
+        <form method="post" class="sort">
             <h2>Sort</h2>
             <label for="priceSort"></label>
             <input type="button" id="priceSort" value="Sort by price" data-sort="ASC">
@@ -57,6 +65,30 @@
     <div id="goods">
 
     </div>
+
+    {% if maxPages > 1 %}
+        <ul class="pages">
+            <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                <a id="prevPage" data-page="thisPage-1 < 1 ? 1 : thisPage-1}}">«</a>
+            </li>
+
+            {% for i in 1..maxPages %}
+                <li {{ thisPage == i ? 'class="active"' }}>
+                    <a id="changePage" data-page="{{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            <li {{ thisPage == maxPages ? 'class="disabled"'}}>
+                <a id="nextPage" data-page="{{thisPage+1 <= maxPages ? thisPage+1 : thisPage}}">»</a>
+            </li>
+        </ul>
+    {% endif %}
+
+
+
+    <fotter class="footer">
+        <h5>© TYZ Floy</h5>
+    </fotter>
 </div>
     {% block javascripts %}
         {{ encore_entry_script_tags('main') }}

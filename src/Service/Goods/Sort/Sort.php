@@ -4,25 +4,26 @@
 namespace App\Service\Goods\Sort;
 
 
+use Symfony\Component\DependencyInjection\ServiceLocator;
+
 class Sort
 {
-    private $sorts;
+    private $sortLocator;
 
-    public function sortAll($qb, $sorts){
-        $this->sorts = $sorts;
-        $this->priceSort($qb);
-        $this->countSort($qb);
+    /**
+     * Filter constructor.
+     * @param ServiceLocator $sortLocator
+     */
+
+    public function __construct(ServiceLocator $sortLocator)
+    {
+        $this->sortLocator = $sortLocator;
     }
 
-    public function priceSort($qb)
-    {
-        $sort = new PriceSort();
-        $sort->sort($this->sorts, $qb);
-    }
-
-    public function countSort($qb)
-    {
-        $sort = new CountSort();
-        $sort->sort($this->sorts, $qb);
+    public function applySort($sorts, $qb){
+        $classes = array_keys($this->sortLocator->getProvidedServices());
+        foreach ($classes as $class)
+            if ($this->sortLocator->get($class)->canSort($sorts))
+                $this->sortLocator->get($class)->sort($sorts, $qb);
     }
 }

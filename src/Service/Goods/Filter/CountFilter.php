@@ -13,9 +13,12 @@ class CountFilter implements FilterInterface
         /**
          * @var $qb QueryBuilder
          */
-        if (array_key_exists('minCount', (array)$filters)) {
-            $qb->andWhere('goods.count >= :minCount');
-            $qb->setParameter('minCount', $filters['minCount']);
-        }
+        $qb->andWhere('goods.count >= :minCount');
+        $qb->setParameter('minCount', $filters['minCount']);
+    }
+
+    public function canFilter($filters): bool
+    {
+        return array_key_exists('minCount', (array)$filters);
     }
 }

@@ -15,6 +15,7 @@ use App\Service\Goods\Filter\PriceFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\AST\Functions\AvgFunction;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,10 +40,14 @@ class GoodsController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function viewGoods(Request $request): Response
+    public function viewGoods(Request $request, GoodsService $service): Response
     {
+        $paginator = $service->doActions(['page' => 0]);
+        $maxPages = ceil($paginator->count() / 5);
         return $this->render('view_items/index.html.twig', [
-            "categories" => $this->manager->getRepository(Category::class)->findAll()
+            "categories" => $this->manager->getRepository(Category::class)->findAll(),
+            'maxPages' => $maxPages,
+            'thisPage' => 1
         ]);
     }
 
@@ -51,6 +56,7 @@ class GoodsController extends AbstractController
      * @param Request $request
      * @param GoodsService $service
      * @return Response
+     * @throws Exception
      */
     public function getGoods(Request $request, GoodsService $service)
     {
@@ -60,9 +66,9 @@ class GoodsController extends AbstractController
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizer, $encoder);
-        $data = $service->doActions(json_decode($request->getContent(), true));
+        $data = $service->doActions( json_decode($request->getContent(), true));
         $res = [];
-        foreach ($data as $value)
+        foreach ($data->getIterator() as $value)
             array_push($res, $this->renderView('good.html.twig', ['good' => $value]));
         return new JsonResponse($serializer->serialize($res, 'json'), 200, [], true);
     }

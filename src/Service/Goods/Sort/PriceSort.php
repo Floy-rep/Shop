@@ -13,8 +13,11 @@ class PriceSort implements SortInterface
         /**
          * @var $qb QueryBuilder
          */
-        if (array_key_exists('type', (array)$sorts))
-            if ($sorts['type'] == 'price')
-                $qb->orderBy('goods.price', $sorts['order']);
+        $qb->orderBy('goods.price', $sorts['order']);
+    }
+
+    public function canSort($sorts): bool
+    {
+        return array_key_exists('type', (array)$sorts) && $sorts['type'] == 'price';
     }
 }

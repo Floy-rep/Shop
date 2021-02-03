@@ -1,5 +1,4 @@
-import './styles/test.scss';
-
+import './styles/main.scss';
 
 const Routing = require("../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router");
 let Routes = require('./js-routes.json');
@@ -9,9 +8,12 @@ Routing.setRoutingData(Routes);
 
 let filters = {};
 let sorts = {};
+let page = 1;
 
 document.addEventListener('DOMContentLoaded', function (event) {
-    axios.post(Routing.generate('getGoods'), {})
+    axios.post(Routing.generate('getGoods'), {
+        page
+    })
         .then(function (response) {
             Insert(response.data)
         })
@@ -24,12 +26,16 @@ document.addEventListener('click', function (event) {
         if (count.value > 0) {
             axios.post(Routing.generate('addToCard', {id: target.id}), {
                 'id': target.id,
-                'amount': count.value
+                'amount': count.value,
+                page
             })
                 .then(function (response) {
+                    let block = document.getElementById('good_'+target.id)
+                    block.style.backgroundColor = '#c2ff88';
                     target.value = 'Added';
                     setTimeout(() => {
-                        target.value = "Add"
+                        target.value = "Add";
+                        block.style.backgroundColor = 'white';
                     }, 2000);
                 })
         } else {
@@ -40,6 +46,53 @@ document.addEventListener('click', function (event) {
             }, 2000);
         }
     }
+    if (target.id === 'changePage'){
+        page = target.dataset.page;
+        axios.post(Routing.generate('getGoods'), {
+            filters, sorts, page
+        })
+            .then((response) => {
+                Insert(response.data);
+                target.style.color = '#5eb5e0';
+                setTimeout(() => {
+                    target.style.color = 'black';
+                    buttonFilter.value = "Filter"
+                }, 2000);
+            })
+    }
+})
+
+// footer TODO refactor
+let nextPage = document.getElementById('nextPage')
+nextPage.addEventListener('click', () => {
+    page += 1
+    axios.post(Routing.generate('getGoods'), {
+        filters, sorts, page
+    })
+        .then((response) => {
+            Insert(response.data);
+            nextPage.style.color = '#5eb5e0';
+            setTimeout(() => {
+                nextPage.style.color = 'black';
+                buttonFilter.value = "Filter"
+            }, 2000);
+        })
+})
+
+let prevPage = document.getElementById('prevPage')
+prevPage.addEventListener('click', () => {
+    page > 1 ? page -= 1 : page = 1
+    axios.post(Routing.generate('getGoods'), {
+        filters, sorts, page
+    })
+        .then((response) => {
+            Insert(response.data);
+            prevPage.style.color = '#5eb5e0';
+            setTimeout(() => {
+                prevPage.style.color = 'black';
+                buttonFilter.value = "Filter"
+            }, 2000);
+        })
 })
 
 // ----------- BUTTONS ----------- //
@@ -47,7 +100,7 @@ document.addEventListener('click', function (event) {
 let buttonFilter = document.getElementById('buttonFilter');
 buttonFilter.addEventListener('click', () => {
     axios.post(Routing.generate('getGoods'), {
-        filters, sorts
+        filters, sorts, page: 1
     })
         .then(function (response) {
             buttonFilter.value = 'Filtered';
@@ -66,7 +119,7 @@ buttonFilterClear.addEventListener('click', () => {
     count.value = 1
     category.selectedIndex = 0
     axios.post(Routing.generate('getGoods'), {
-        filters, sorts
+        filters, sorts, page: 1
     })
         .then(function (response) {
             buttonFilterClear.value = 'Success';
@@ -82,7 +135,7 @@ buttonPriceSort.addEventListener('click', () => {
     sorts = {'type': 'price', 'order': buttonPriceSort.dataset.sort}
     buttonPriceSort.dataset.sort === "ASC" ? buttonPriceSort.dataset.sort = "DESC" : buttonPriceSort.dataset.sort = "ASC"
     axios.post(Routing.generate('getGoods'), {
-        filters, sorts
+        filters, sorts, page: 1
     })
         .then(function (response) {
             buttonPriceSort.value = 'Sorted';
@@ -99,7 +152,7 @@ buttonCountSort.addEventListener('click', () => {
     sorts = {'type': 'count', 'order': buttonCountSort.dataset.sort}
     buttonCountSort.dataset.sort === "ASC" ? buttonCountSort.dataset.sort = "DESC" : buttonCountSort.dataset.sort = "ASC"
     axios.post(Routing.generate('getGoods'), {
-        filters, sorts
+        filters, sorts, page: 1
     })
         .then(function (response) {
             buttonCountSort.value = 'Sorted';
@@ -115,7 +168,7 @@ let buttonClearSort = document.getElementById('clearSort');
 buttonClearSort.addEventListener('click', () => {
     sorts = {};
     axios.post(Routing.generate('getGoods'), {
-        filters, sorts
+        filters, sorts, page: 1
     })
         .then(function (response) {
             buttonClearSort.value = 'Success';
@@ -133,7 +186,7 @@ buttonClearSort.addEventListener('click', () => {
 
 let category = document.getElementById('category')
 category.addEventListener('change', function (event) {
-    filters["category"] = category[category.selectedIndex].value
+    filters["category"] = category[category.selectedIndex].id
 })
 
 let minPrice = document.getElementById('minNum')

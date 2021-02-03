@@ -13,8 +13,10 @@ class CountSort implements SortInterface
         /**
          * @var $qb QueryBuilder
          */
-        if (array_key_exists('type', (array)$sorts))
-            if ($sorts['type'] == 'count')
-                $qb->orderBy('goods.count', $sorts['order']);
+        $qb->orderBy('goods.count', $sorts['order']);
+    }
+    public function canSort($sorts): bool
+    {
+        return array_key_exists('type', (array)$sorts) && $sorts['type'] == 'count';
     }
 }

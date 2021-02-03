@@ -13,11 +13,15 @@ class PriceFilter implements FilterInterface
         /**
          * @var $qb QueryBuilder
          */
-        if (array_key_exists('price', (array)$filters)){
-            $qb->andWhere('goods.price >= :min');
-            $qb->andWhere('goods.price <= :max');
-            $qb->setParameter('min', $filters['price']['min']);
-            $qb->setParameter('max', $filters['price']['max']);
-        }
+        $qb->andWhere('goods.price >= :min');
+        $qb->andWhere('goods.price <= :max');
+        $qb->setParameter('min', $filters['price']['min']);
+        $qb->setParameter('max', $filters['price']['max']);
     }
+
+    public function canFilter($filters): bool
+    {
+        return array_key_exists('price', (array)$filters);
+    }
+
 }
