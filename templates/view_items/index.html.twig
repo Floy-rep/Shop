@@ -66,25 +66,9 @@
 
     </div>
 
-    {% if maxPages > 1 %}
-        <ul class="pages">
-            <li {{ thisPage == 1 ? 'class="disabled"' }}>
-                <a id="prevPage" data-page="thisPage-1 < 1 ? 1 : thisPage-1}}">«</a>
-            </li>
+    <div id="paginator">
 
-            {% for i in 1..maxPages %}
-                <li {{ thisPage == i ? 'class="active"' }}>
-                    <a id="changePage" data-page="{{ i }}">{{ i }}</a>
-                </li>
-            {% endfor %}
-
-            <li {{ thisPage == maxPages ? 'class="disabled"'}}>
-                <a id="nextPage" data-page="{{thisPage+1 <= maxPages ? thisPage+1 : thisPage}}">»</a>
-            </li>
-        </ul>
-    {% endif %}
-
-
+    </div>
 
     <fotter class="footer">
         <h5>© TYZ Floy</h5>

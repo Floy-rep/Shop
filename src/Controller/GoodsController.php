@@ -42,12 +42,8 @@ class GoodsController extends AbstractController
      */
     public function viewGoods(Request $request, GoodsService $service): Response
     {
-        $paginator = $service->doActions(['page' => 0]);
-        $maxPages = ceil($paginator->count() / 5);
         return $this->render('view_items/index.html.twig', [
             "categories" => $this->manager->getRepository(Category::class)->findAll(),
-            'maxPages' => $maxPages,
-            'thisPage' => 1
         ]);
     }
 
@@ -70,6 +66,10 @@ class GoodsController extends AbstractController
         $res = [];
         foreach ($data->getIterator() as $value)
             array_push($res, $this->renderView('good.html.twig', ['good' => $value]));
+        array_push($res, $this->renderView('view_items/paginate.html.twig', [
+            'thisPage' => json_decode($request->getContent(), true)['page'],
+            'maxPages' => ceil($data->count() / 6)
+        ]));
         return new JsonResponse($serializer->serialize($res, 'json'), 200, [], true);
     }
 

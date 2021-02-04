@@ -76,17 +76,13 @@ h1 {
   padding: 0;
 
   li{
+    color: #5eb5e0;
     list-style: none;
     padding: 0 5px;
     cursor: pointer;
-    text-decoration: underline;
-    transition: all 0.5s;
     &:hover{
-      text-decoration: none;
-      color: #5eb5e0;
-    }
-    &:active{
-      text-decoration: none;
+      color: dodgerblue;
+      text-decoration: underline;
     }
   }
 }

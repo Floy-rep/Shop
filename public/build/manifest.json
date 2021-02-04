@@ -8,8 +8,5 @@
   "build/runtime.js": "/build/runtime.js",
   "build/vendors~admin.js": "/build/vendors~admin.js",
   "build/vendors~admin~cart~main.js": "/build/vendors~admin~cart~main.js",
-  "build/vendors~cart~main.js": "/build/vendors~cart~main.js",
-  "build/admin~cart.js": "/build/admin~cart.js",
-  "build/vendors~admin~cart.js": "/build/vendors~admin~cart.js",
-  "build/vendors~cart.js": "/build/vendors~cart.js"
+  "build/vendors~cart~main.js": "/build/vendors~cart~main.js"
 }

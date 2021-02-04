@@ -46,57 +46,24 @@ document.addEventListener('click', function (event) {
             }, 2000);
         }
     }
+
+    // ----------- PAGINATOR ----------- //
     if (target.id === 'changePage'){
         page = target.dataset.page;
-        axios.post(Routing.generate('getGoods'), {
-            filters, sorts, page
-        })
-            .then((response) => {
-                Insert(response.data);
-                target.style.color = '#5eb5e0';
-                setTimeout(() => {
-                    target.style.color = 'black';
-                    buttonFilter.value = "Filter"
-                }, 2000);
-            })
+        Paginate(target, page)
+    }
+    if (target.id === 'nextPage'){
+        let maxPages = document.getElementById('pages').childElementCount - 2
+        page < maxPages ? page += 1 : page = maxPages
+        Paginate(target, page)
+    }
+    if (target.id === 'prevPage'){
+        page > 1 ? page -= 1 : page = 1
+        Paginate(target, page)
     }
 })
 
-// footer TODO refactor
-let nextPage = document.getElementById('nextPage')
-nextPage.addEventListener('click', () => {
-    page += 1
-    axios.post(Routing.generate('getGoods'), {
-        filters, sorts, page
-    })
-        .then((response) => {
-            Insert(response.data);
-            nextPage.style.color = '#5eb5e0';
-            setTimeout(() => {
-                nextPage.style.color = 'black';
-                buttonFilter.value = "Filter"
-            }, 2000);
-        })
-})
-
-let prevPage = document.getElementById('prevPage')
-prevPage.addEventListener('click', () => {
-    page > 1 ? page -= 1 : page = 1
-    axios.post(Routing.generate('getGoods'), {
-        filters, sorts, page
-    })
-        .then((response) => {
-            Insert(response.data);
-            prevPage.style.color = '#5eb5e0';
-            setTimeout(() => {
-                prevPage.style.color = 'black';
-                buttonFilter.value = "Filter"
-            }, 2000);
-        })
-})
-
 // ----------- BUTTONS ----------- //
-
 let buttonFilter = document.getElementById('buttonFilter');
 buttonFilter.addEventListener('click', () => {
     axios.post(Routing.generate('getGoods'), {
@@ -179,11 +146,8 @@ buttonClearSort.addEventListener('click', () => {
         })
 })
 
-// ########### BUTTONS ########### //
-
 
 // ----------- GET DATA FILTER ----------- //
-
 let category = document.getElementById('category')
 category.addEventListener('change', function (event) {
     filters["category"] = category[category.selectedIndex].id
@@ -212,16 +176,31 @@ count.addEventListener('change', () => {
     filters["minCount"] = count.value
 })
 
-// ########### GET DATA FILTER ########### //
-
 
 function Insert(data) {
     while (goods.lastElementChild)
         goods.removeChild(goods.lastElementChild);
-    for (let i = 0; i < data.length; i++) {
+
+    for (let i = 0; i < data.length - 1; i++) {
         let form = document.createElement('form')
         form.innerHTML = data[i]
         goods.appendChild(form)
     }
+
+    let paginator = document.getElementById('paginator');
+    paginator.innerHTML = data[data.length-1];
+}
+
+function Paginate(target, page){
+    target.style.color = 'dodgerblue';
+    target.style.textDecoration = 'underline'
+    axios.post(Routing.generate('getGoods'), {
+        filters, sorts, page
+    })
+        .then((response) => {
+            Insert(response.data);
+            target.style.color = '#5eb5e0';
+            target.style.textDecoration = 'none'
+        })
 }
 

@@ -1,0 +1,17 @@
+{% if maxPages > 1 %}
+    <ul class="pages" id="pages">
+        <li {{ thisPage == 1 ? 'class="disabled"' }}>
+            <a id="prevPage" data-page="{{thisPage-1 < 1 ? 1 : thisPage-1}}">«</a>
+        </li>
+
+        {% for i in 1..maxPages %}
+            <li {{ thisPage == i ? 'class="active"' }}>
+                <a id="changePage" data-page="{{ i }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+
+        <li {{ thisPage == maxPages ? 'class="disabled"'}}>
+            <a id="nextPage" data-page="{{thisPage+1 <= maxPages ? thisPage+1 : thisPage}}">»</a>
+        </li>
+    </ul>
+{% endif %}

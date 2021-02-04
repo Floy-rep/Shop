@@ -55,7 +55,7 @@ class GoodsService
 
         // ------- PAGINATOR ------- //
         $paginator = new Paginator($qb->getQuery());
-        $limit = 5;
+        $limit = 6;
         $paginator->getQuery()
             ->setFirstResult($limit * ($request['page'] - 1))
             ->setMaxResults($limit);
