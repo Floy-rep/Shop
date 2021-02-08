@@ -22,18 +22,18 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-//        $entity = new User();
-//        $entity->setEmail("sad@mail.ru");
-//        $entity->setPassword($this->encoder->encodePassword($entity,"123123"));
-//        $entity->setRoles(array('ROLE_ADMIN'));
-//
-//        $order = new Order();
-//        $order->setOrderId($entity);
-//        $orderGood = new OrderGood();
-//        $orderGood->setOrder($order);
-//
-//        $entity->addOrder($order);
-//        $manager->persist($entity);
-//        $manager->flush();
+        $entity = new User();
+        $entity->setEmail("sad@mail.ru");
+        $entity->setPassword($this->encoder->encodePassword($entity,"123123"));
+        $entity->setRoles(array('ROLE_ADMIN'));
+
+        $order = new Order();
+        $order->setOrderId($entity);
+        $orderGood = new OrderGood();
+        $orderGood->setOrder($order);
+
+        $entity->addOrder($order);
+        $manager->persist($entity);
+        $manager->flush();
     }
 }

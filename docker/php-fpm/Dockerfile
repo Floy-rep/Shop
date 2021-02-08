@@ -1,6 +1,6 @@
 FROM php:fpm-alpine
-COPY wait.sh /usr/bin/wait
-RUN chmod +x /usr/bin/wait
+COPY ./wait.sh /usr/bin/wait.sh
+RUN chmod +x /usr/bin/wait.sh
 RUN apk --update --no-cache add git
 RUN apk add --no-cache bash
 RUN docker-php-ext-install pdo_mysql

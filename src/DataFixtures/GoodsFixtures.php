@@ -10,15 +10,13 @@ class GoodsFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-//        $entity = new Goods1();
-//        $entity->setName('Ananas');
-//        $entity->setColor('yellow');
-//        $entity->setprice('50');
-//        $entity->setCount(10);
-//        $entity->setDescription("Very yellow");
-//
-//        $manager->persist($entity);
-//        $manager->flush();
-
+        $entity = new Goods();
+        $entity->setName('Ananas');
+        $entity->setColor('yellow');
+        $entity->setprice('50');
+        $entity->setCount(10);
+        $entity->setDescription("Very yellow");
+        $manager->persist($entity);
+        $manager->flush();
     }
 }

@@ -5,8 +5,9 @@ services:
     build:
       context: ./database
     environment:
-      - MYSQL_DATABASE=${DATABASE_NAME}
-      - MYSQL_USER=${DATABASE_USER}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+#      - MYSQL_USER=${DATABASE_USER}
 #      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
 #      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
     ports:
@@ -22,8 +23,8 @@ services:
       - database
     environment:
       - DATABASE_URL=mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@database:3306/${DATABASE_NAME}?serverVersion=mariadb-10.5.8&charset=utf8
-      - APP_ENV=${APP_ENV}
-      - APP_SECRET=${APP_SECRET}
+#      - APP_ENV=${APP_ENV}
+#      - APP_SECRET=${APP_SECRET}
     volumes:
       - ../../Shop:/var/www
 #
