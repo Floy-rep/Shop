@@ -16,7 +16,7 @@ services:
       - ./database/data:/var/lib/mysql
 #
   php-fpm:
-    build:
+2    build:
       context: ./php-fpm
     depends_on:
       - database
