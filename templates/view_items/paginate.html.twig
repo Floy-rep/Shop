@@ -1,17 +1,44 @@
 {% if maxPages > 1 %}
     <ul class="pages" id="pages">
         <li {{ thisPage == 1 ? 'class="disabled"' }}>
-            <a id="prevPage" data-page="{{thisPage-1 < 1 ? 1 : thisPage-1}}">«</a>
+            <a id="selectPage" class="paginate__nav" data-page="{{thisPage-1 < 1 ? 1 : thisPage-1}}">«</a>
         </li>
+        {% if maxPages < 10 %}
+            {% for i in 1..maxPages %}
+                <li>
+                    <a class="paginate__nav" id="selectPage" data-page="{{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% elseif thisPage + 5 < maxPages%}
+            {% if thisPage < 10 %}
+                {% for i in 1..10 %}
+                <li>
+                    <a class="paginate__nav" id="selectPage" data-page="{{ i }}">{{ i }}</a>
+                </li>
+                {% endfor %}
+            {% elseif thisPage >= 10 and thisPage + 5 < maxPages %}
+                {% for i in thisPage-5..thisPage + 5 %}
+                    <li>
+                        <a class="paginate__nav" id="selectPage" data-page="{{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                {% for i in thisPage..maxPages %}
+                    <li>
+                        <a class="paginate__nav" id="selectPage" data-page="{{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% for i in thisPage-5..maxPages %}
+                <li>
+                    <a class="paginate__nav" id="selectPage" data-page="{{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
 
-        {% for i in 1..maxPages %}
-            <li {{ thisPage == i ? 'class="active"' }}>
-                <a id="changePage" data-page="{{ i }}">{{ i }}</a>
-            </li>
-        {% endfor %}
-
-        <li {{ thisPage == maxPages ? 'class="disabled"'}}>
-            <a id="nextPage" data-page="{{thisPage+1 <= maxPages ? thisPage+1 : thisPage}}">»</a>
+        <li>
+            <a id="selectPage" class="paginate__nav" data-page="{{thisPage+1 <= maxPages ? thisPage+1 : thisPage}}">»</a>
         </li>
     </ul>
 {% endif %}

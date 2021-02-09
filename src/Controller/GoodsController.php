@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -29,10 +30,14 @@ use Symfony\Component\Serializer\Serializer;
 class GoodsController extends AbstractController
 {
     private $manager;
+    private $serializer;
 
     public function __construct(EntityManagerInterface $manager)
     {
         $this->manager = $manager;
+        $encoder = [new JsonEncoder()];
+        $normalizer = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($normalizer, $encoder);
     }
 
     /**
@@ -40,11 +45,16 @@ class GoodsController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function viewGoods(Request $request, GoodsService $service): Response
+    public function viewGoods(Request $request): Response
     {
-        return $this->render('view_items/index.html.twig', [
+        $response = new Response($this->render('view_items/index.html.twig', [
             "categories" => $this->manager->getRepository(Category::class)->findAll(),
-        ]);
+        ]));
+        $response->setPublic();
+        $response->setMaxAge(600);
+        $response->headers->addCacheControlDirective('must-revalidate', true);
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, true);
+        return $response;
     }
 
     /**
@@ -59,18 +69,15 @@ class GoodsController extends AbstractController
         /**
          * @var GoodsRepository $goodsRepository
          */
-        $encoder = [new JsonEncoder()];
-        $normalizer = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizer, $encoder);
         $data = $service->doActions( json_decode($request->getContent(), true));
         $res = [];
         foreach ($data->getIterator() as $value)
             array_push($res, $this->renderView('good.html.twig', ['good' => $value]));
         array_push($res, $this->renderView('view_items/paginate.html.twig', [
             'thisPage' => json_decode($request->getContent(), true)['page'],
-            'maxPages' => ceil($data->count() / 6)
+            'maxPages' => ceil($data->count() / 6),
         ]));
-        return new JsonResponse($serializer->serialize($res, 'json'), 200, [], true);
+        return new JsonResponse($this->serializer->serialize($res, 'json'), 200, [], true);
     }
 
 }

@@ -5,7 +5,7 @@
 {% block body %}
 
 <div class="example-wrapper">
-    <h1>Hello its a shop! ✅</h1>
+    <h1>Hello its a shop!!! ✅</h1>
     {% if app.user %}
         <h2 class="login">Auth as {{app.user.username}}</h2>
     {% endif %}
@@ -38,7 +38,7 @@
                     <select name="category" id="category" style="width: 250px;">
                         <option value="None">None</option>
                         {% for category in categories %}
-                            <option value="{{ category }}" id="{{ category.id }}">{{ category }}</option>
+                            <option value="{{ category}}" id="{{ category.id }}">{{ category }}: {{ category.goods|length }}</option>
                         {% endfor %}
                     </select>
                 </div>

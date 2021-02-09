@@ -48,19 +48,9 @@ document.addEventListener('click', function (event) {
     }
 
     // ----------- PAGINATOR ----------- //
-    if (target.id === 'changePage'){
-        page = target.dataset.page;
-        Paginate(target, page)
-    }
-    if (target.id === 'nextPage'){
-        let maxPages = document.getElementById('pages').childElementCount - 2
-        page < maxPages ? page += 1 : page = maxPages
-        Paginate(target, page)
-    }
-    if (target.id === 'prevPage'){
-        page > 1 ? page -= 1 : page = 1
-        Paginate(target, page)
-    }
+    if (target.id === 'selectPage')
+        Paginate(target, parseInt(target.dataset.page))
+    
 })
 
 // ----------- BUTTONS ----------- //

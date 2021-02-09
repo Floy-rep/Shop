@@ -34,4 +34,9 @@ final class Version20210118124431 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_563B92D12469DE2 ON goods');
         $this->addSql('ALTER TABLE goods DROP category_id');
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }

@@ -44,4 +44,9 @@ final class Version20210120121146 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_2175748561E73083 ON order_good (good_id_id)');
         $this->addSql('CREATE INDEX IDX_21757485FCDAEAAA ON order_good (order_id_id)');
     }
+
+    public function isTransactional(): bool
+    {
+        return false;
+    }
 }
