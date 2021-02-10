@@ -20,4 +20,10 @@ yarn-error.log
 
 ### docker
 
-/docker/database/data
+/docker/database/data/
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###

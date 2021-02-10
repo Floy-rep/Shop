@@ -50,10 +50,8 @@ class GoodsController extends AbstractController
         $response = new Response($this->render('view_items/index.html.twig', [
             "categories" => $this->manager->getRepository(Category::class)->findAll(),
         ]));
-        $response->setPublic();
-        $response->setMaxAge(600);
-        $response->headers->addCacheControlDirective('must-revalidate', true);
-        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, true);
+//        $response->setPublic();
+//        $response->setMaxAge('3600');
         return $response;
     }
 
@@ -69,7 +67,7 @@ class GoodsController extends AbstractController
         /**
          * @var GoodsRepository $goodsRepository
          */
-        $data = $service->doActions( json_decode($request->getContent(), true));
+        $data = $service->doActions(json_decode($request->getContent(), true));
         $res = [];
         foreach ($data->getIterator() as $value)
             array_push($res, $this->renderView('good.html.twig', ['good' => $value]));
