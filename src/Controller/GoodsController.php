@@ -26,6 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class GoodsController extends AbstractController
 {
@@ -45,11 +47,21 @@ class GoodsController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function viewGoods(Request $request): Response
+    public function viewGoods(Request $request, CacheInterface $cache): Response
     {
         $response = new Response($this->render('view_items/index.html.twig', [
             "categories" => $this->manager->getRepository(Category::class)->findAll(),
         ]));
+
+        ##########
+//        $token = $cache->get('yandex_translate_api_token', function(ItemInterface $item){
+//           $token = 123;
+//           $item->set($token);
+//           $item->expiresAfter(3600);
+//           dump($token);
+//        });
+        ##########
+//        $cache->delete('yandex_translate_api_token');
 //        $response->setPublic();
 //        $response->setMaxAge('3600');
         return $response;
