@@ -17,7 +17,19 @@ document.addEventListener('DOMContentLoaded', function (event) {
         .then(function (response) {
             Insert(response.data)
         })
+    setURL(page, filters, sorts)
 })
+
+window.onpopstate = function(event) {
+    axios.post(Routing.generate('getGoods'), {
+        "filters": event.state.filters,
+        "sorts": event.state.sorts,
+        "page": event.state.page
+    })
+        .then((response) => {
+            Insert(response.data)
+        })
+}
 
 document.addEventListener('click', function (event) {
     let target = event.target;
@@ -48,8 +60,11 @@ document.addEventListener('click', function (event) {
     }
 
     // ----------- PAGINATOR ----------- //
-    if (target.id === 'selectPage')
+    if (target.id === 'selectPage'){
+        page = target.dataset.page
         Paginate(target, parseInt(target.dataset.page))
+        setURL(page, filters, sorts)
+    }
     
 })
 
@@ -65,8 +80,10 @@ buttonFilter.addEventListener('click', () => {
                 buttonFilter.value = "Filter"
             }, 2000);
             Insert(response.data)
+            setURL(1,filters, sorts)
         })
 })
+
 
 let buttonFilterClear = document.getElementById('clearFilter');
 buttonFilterClear.addEventListener('click', () => {
@@ -84,6 +101,7 @@ buttonFilterClear.addEventListener('click', () => {
                 buttonFilterClear.value = "Clear"
             }, 2000);
             Insert(response.data)
+            setURL(1,{},sorts)
         })
 })
 
@@ -100,6 +118,7 @@ buttonPriceSort.addEventListener('click', () => {
                 buttonPriceSort.value = "Sort by price"
             }, 2000);
             Insert(response.data)
+            setURL(1,filters, sorts)
         })
 })
 
@@ -117,6 +136,7 @@ buttonCountSort.addEventListener('click', () => {
                 buttonCountSort.value = "Sort by count"
             }, 2000);
             Insert(response.data)
+            setURL(1,filters, sorts)
         })
 })
 
@@ -133,6 +153,7 @@ buttonClearSort.addEventListener('click', () => {
                 buttonClearSort.value = "Clear"
             }, 2000);
             Insert(response.data)
+            setURL(1,filters,{})
         })
 })
 
@@ -166,6 +187,7 @@ count.addEventListener('change', () => {
     filters["minCount"] = count.value
 })
 
+// ----------- CUSTOM METHODS ----------- //
 
 function Insert(data) {
     while (goods.lastElementChild)
@@ -192,5 +214,25 @@ function Paginate(target, page){
             target.style.color = '#5eb5e0';
             target.style.textDecoration = 'none'
         })
+}
+
+function setURL(page_data, filters_data, sorts_data){
+    let params = new URLSearchParams()
+    setURLParams(params, {"page": page_data})
+    setURLParams(params, filters_data)
+    setURLParams(params, sorts_data)
+    history.pushState({"filters": filters_data, "page": page_data, "sorts": sorts_data}, '', '?'+params.toString());
+}
+
+function setURLParams(params, value){
+    for(let key in value){
+        if (typeof value[key] === 'object'){
+            for(let key_inner in value[key])
+                params.append(key_inner, value[key][key_inner]);
+        }
+        else
+        if (value[key].length !== 0)
+            params.append(key, value[key]);
+    }
 }
 

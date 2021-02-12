@@ -17,6 +17,7 @@ use Doctrine\ORM\Query\AST\Functions\AvgFunction;
 use Doctrine\ORM\QueryBuilder;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,27 +45,15 @@ class GoodsController extends AbstractController
 
     /**
      * @Route("/", name="viewGoods", methods={"GET"})
-     * @param Request $request
+     * @param GoodsService $goodsService
      * @return Response
      */
-    public function viewGoods(Request $request, CacheInterface $cache): Response
+    public function viewGoods(GoodsService $goodsService): Response
     {
-        $response = new Response($this->render('view_items/index.html.twig', [
-            "categories" => $this->manager->getRepository(Category::class)->findAll(),
+        $categories = $goodsService->setCache('categories_data');
+        return ($this->render('view_items/index.html.twig', [
+            "categories" => $categories,
         ]));
-
-        ##########
-//        $token = $cache->get('yandex_translate_api_token', function(ItemInterface $item){
-//           $token = 123;
-//           $item->set($token);
-//           $item->expiresAfter(3600);
-//           dump($token);
-//        });
-        ##########
-//        $cache->delete('yandex_translate_api_token');
-//        $response->setPublic();
-//        $response->setMaxAge('3600');
-        return $response;
     }
 
     /**

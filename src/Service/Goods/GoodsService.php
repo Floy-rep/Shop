@@ -2,6 +2,7 @@
 
 namespace App\Service\Goods;
 
+use App\Entity\Category;
 use App\Entity\Goods;
 use App\Repository\GoodsRepository;
 use App\Service\Goods\Filter\CategoryFilter;
@@ -16,12 +17,16 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class GoodsService
 {
@@ -32,11 +37,14 @@ class GoodsService
     private $sortService;
     private $filterService;
 
-    public function __construct(EntityManagerInterface $manager, Sort $sortService, Filter $filterService)
+    private $cache;
+
+    public function __construct(EntityManagerInterface $manager, Sort $sortService, Filter $filterService, CacheInterface $cache)
     {
         $this->manager = $manager;
         $this->sortService = $sortService;
         $this->filterService = $filterService;
+        $this->cache = $cache;
     }
 
     public function doActions($request)
@@ -71,4 +79,20 @@ class GoodsService
             $this->sorts = $request['sorts'];
     }
 
+    public function setCache(string $key): array
+    {
+        return $this->cache->get($key, function (ItemInterface $item){
+            $value =  $this->manager->getRepository(Category::class)->findAll();
+            $item->expiresAfter(300);
+            return $value;
+        });
+    }
+
+    public function deleteCache(string $key): void
+    {
+        try {
+            $this->cache->delete($key);
+        } catch (InvalidArgumentException $e) {
+        }
+    }
 }

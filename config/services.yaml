@@ -29,6 +29,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+#    App\Service\Goods\GoodsService:
+#        public:true
 
     ### SORTS
     App\Service\Goods\Sort\Sort:
