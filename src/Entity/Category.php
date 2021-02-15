@@ -29,6 +29,11 @@ class Category
      */
     private $goods;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\EavCategoryValue", inversedBy="category", cascade={"persist"}, fetch="EAGER")
+     */
+    private $values;
+
     public function __construct()
     {
         $this->goods = new ArrayCollection();
@@ -83,5 +88,17 @@ class Category
 
     public function __toString(){
         return $this->getCategoryName();
+    }
+
+    public function getValues(): ?EavCategoryValue
+    {
+        return $this->values;
+    }
+
+    public function setValues(?EavCategoryValue $values): self
+    {
+        $this->values = $values;
+
+        return $this;
     }
 }

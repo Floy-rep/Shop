@@ -35,3 +35,16 @@ services:
        - php-fpm
     ports:
        - "80:80"
+  
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: database
+      MYSQL_USERNAME: ${DATABASE_USER}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    restart: always
+    depends_on:
+      - php-fpm
+    ports:
+      - "81:80" 

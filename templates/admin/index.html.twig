@@ -4,6 +4,7 @@
 
 {% block body %}
     <a href="{{ path('viewGoods') }}">Back</a>
+    <h2>Create Good</h2>
     <div class="panel_top" style="display: flex; flex-direction: row; justify-content: space-between" >
         <div class="good" style="display: flex; flex-direction: column;width: 48%">
             <label for="good_name">Name</label>
@@ -24,21 +25,29 @@
             </select>
             <input id="good_submit" type="button" class="submitButton" value="Submit">
         </div>
-        <div id="goodDelete" style="width: 48%">
-
-        </div>
+{#        <div id="goodDelete" style="width: 48%">#}
+{#        </div>#}
     </div>
-
     <hr>
-    {% for user in users %}
-        <div class="user" id="user_{{ user.id }}">
-            <p>{{ user.id }}</p>
-            <p id="email_{{ user.id }}">{{ user.email }}</p>
-            <input id="{{ user.id }}" type="button" class="deleteButton" value="delete">
-            <input id="{{ user.id }}" type="button" class="promtButton" value="to Admin">
-            <hr>
+    <form class="category" method="POST" style="display: flex; flex-direction: column; width: 1000px; margin: 0 auto; height: 400px">
+        <h2 style="text-align: center">Create Category</h2>
+        <label for="category_name">Name</label>
+        <input id="category_name" type="text" class="name">
+        <div id="properties">
+
         </div>
-    {% endfor %}
+        <input id="category_add_field" type="button" value="Add new value">
+        <input id="category_save" type="button" value="Save category">
+    </form>
+{#    {% for user in users %}#}
+{#        <div class="user" id="user_{{ user.id }}">#}
+{#            <p>{{ user.id }}</p>#}
+{#            <p id="email_{{ user.id }}">{{ user.email }}</p>#}
+{#            <input id="{{ user.id }}" type="button" class="deleteButton" value="delete">#}
+{#            <input id="{{ user.id }}" type="button" class="promtButton" value="to Admin">#}
+{#            <hr>#}
+{#        </div>#}
+{#    {% endfor %}#}
     {% block javascripts %}
         {{ encore_entry_script_tags('admin') }}
     {% endblock %}

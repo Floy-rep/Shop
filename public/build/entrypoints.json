@@ -4,7 +4,6 @@
       "js": [
         "/build/runtime.js",
         "/build/vendors~admin~cart~main.js",
-        "/build/vendors~cart~main.js",
         "/build/vendors~main.js",
         "/build/admin~cart~main.js",
         "/build/main.js"
@@ -17,7 +16,6 @@
       "js": [
         "/build/runtime.js",
         "/build/vendors~admin~cart~main.js",
-        "/build/vendors~cart~main.js",
         "/build/admin~cart~main.js",
         "/build/cart.js"
       ]
