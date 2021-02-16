@@ -2,15 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EavCategoryAttributeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\EavAttributeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=EavCategoryAttributeRepository::class)
+ * @ORM\Entity(repositoryClass=EavAttributeRepository::class)
  */
-class EavCategoryAttribute
+class EavAttribute
 {
     /**
      * @ORM\Id
@@ -31,14 +29,9 @@ class EavCategoryAttribute
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="attribute", fetch="EAGER")
-     * @ORM\ManyToOne(targetEntity="App\Entity\EavValue", inversedBy="attribute", fetch="EAGER")
      */
-    private $values;
+    private $category;
 
-    public function __construct()
-    {
-        $this->values = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -69,17 +62,14 @@ class EavCategoryAttribute
         return $this;
     }
 
-    /**
-     * @return Collection|EavCategoryValue[]
-     */
-    public function getValues(): Collection
+    public function getCategory(): ?Category
     {
-        return $this->values;
+        return $this->category;
     }
 
-    public function setValues(?EavCategoryValue $values): self
+    public function setCategory(?Category $category): self
     {
-        $this->values = $values;
+        $this->category = $category;
 
         return $this;
     }

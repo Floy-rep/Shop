@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -30,13 +31,14 @@ class Category
     private $goods;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\EavCategoryValue", inversedBy="category", cascade={"persist"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\EavAttribute", mappedBy="category", fetch="EAGER",cascade={"persist"})
      */
-    private $values;
+    private $attribute;
 
     public function __construct()
     {
         $this->goods = new ArrayCollection();
+        $this->attribute = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,18 +88,37 @@ class Category
         return $this;
     }
 
-    public function __toString(){
+    #[Pure] public function __toString(): string
+    {
         return $this->getCategoryName();
     }
 
-    public function getValues(): ?EavCategoryValue
+    /**
+     * @return Collection|EavAttribute[]
+     */
+    public function getAttribute(): Collection
     {
-        return $this->values;
+        return $this->attribute;
     }
 
-    public function setValues(?EavCategoryValue $values): self
+    public function addAttribute(EavAttribute $attribute): self
     {
-        $this->values = $values;
+        if (!$this->attribute->contains($attribute)) {
+            $this->attribute[] = $attribute;
+            $attribute->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(EavAttribute $attribute): self
+    {
+        if ($this->attribute->removeElement($attribute)) {
+            // set the owning side to null (unless already changed)
+            if ($attribute->getCategory() === $this) {
+                $attribute->setCategory(null);
+            }
+        }
 
         return $this;
     }

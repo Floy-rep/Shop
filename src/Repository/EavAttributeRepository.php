@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\EavCategoryValue;
+use App\Entity\EavAttribute;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method EavCategoryValue|null find($id, $lockMode = null, $lockVersion = null)
- * @method EavCategoryValue|null findOneBy(array $criteria, array $orderBy = null)
- * @method EavCategoryValue[]    findAll()
- * @method EavCategoryValue[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method EavAttribute|null find($id, $lockMode = null, $lockVersion = null)
+ * @method EavAttribute|null findOneBy(array $criteria, array $orderBy = null)
+ * @method EavAttribute[]    findAll()
+ * @method EavAttribute[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class EavCategoryValueRepository extends ServiceEntityRepository
+class EavAttributeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, EavCategoryValue::class);
+        parent::__construct($registry, EavAttribute::class);
     }
 
     // /**
-    //  * @return EavCategoryValue[] Returns an array of EavCategoryValue objects
+    //  * @return EavAttribute[] Returns an array of EavAttribute objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class EavCategoryValueRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?EavCategoryValue
+    public function findOneBySomeField($value): ?EavAttribute
     {
         return $this->createQueryBuilder('e')
             ->andWhere('e.exampleField = :val')

@@ -5,8 +5,8 @@ namespace App\Service\Admin;
 
 
 use App\Entity\Category;
-use App\Entity\EavCategoryAttribute;
-use App\Entity\EavCategoryValue;
+use App\Entity\EavAttribute;
+use App\Entity\EavValue;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment;
 
@@ -27,27 +27,23 @@ class CategoryService
     public function addCategory(string $name, array $fields): int
     {
         $category = new Category();
-        $values = new EavCategoryValue();
-
         $category->setCategoryName($name);
-        $category->setValues($values);
-        $this->setCategoryAttribute($values, $fields);
-        $values->addCategory($category);
+        $this->setCategoryAttribute($category, $fields);
 
         $this->manager->persist($category);
         $this->manager->flush();
         return $category->getId();
     }
 
-    public function setCategoryAttribute($values, array $fields)
+    public function setCategoryAttribute(Category $category, array $fields)
     {
         foreach ($fields as $field) {
             if ($this->checkCategoryData($field)){
-                $attribute = new EavCategoryAttribute();
-                $attribute->setValues($values);
+                $attribute = new EavAttribute();
+                $attribute->setCategory($category);
                 $attribute->setName($field['name']);
                 $attribute->setType($field['type']);
-                $values->addAttribute($attribute);
+                $category->addAttribute($attribute);
             }
         }
     }
@@ -74,8 +70,7 @@ class CategoryService
         $categoryRepository = $this->manager->getRepository(Category::class);
         $qb = $categoryRepository->createQueryBuilder('category');
         $qb->select('attribute.name, attribute.type');
-        $qb->leftJoin('category.values', 'values');
-        $qb->leftJoin('values.attribute', 'attribute');
+        $qb->leftJoin('category.attribute', 'attribute');
         $qb->where('category.id = :id');
         $qb->setParameter('id', $id);
         return $qb->getQuery()->getResult();

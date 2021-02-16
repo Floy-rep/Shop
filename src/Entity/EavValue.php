@@ -35,19 +35,17 @@ class EavValue
     private $value_bool;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Goods", mappedBy="good", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Goods", inversedBy="values", fetch="EAGER")
      */
-    private $goods;
+    private $good;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\EavCategoryAttribute", mappedBy="values", fetch="EAGER")
-     */
-    private $attribute;
+//    /**
+//     * @ORM\OneToMany(targetEntity="App\Entity\EavAttribute", mappedBy="category", fetch="EAGER")
+//     */
+//    private $attribute;
 
     public function __construct()
     {
-        $this->goods = new ArrayCollection();
-        $this->attribute = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,63 +89,17 @@ class EavValue
         return $this;
     }
 
-    /**
-     * @return Collection|Goods[]
-     */
-    public function getGoods(): Collection
+    public function getGood(): ?Goods
     {
-        return $this->goods;
+        return $this->good;
     }
 
-    public function addGood(Goods $good): self
+    public function setGood(?Goods $good): self
     {
-        if (!$this->goods->contains($good)) {
-            $this->goods[] = $good;
-            $good->setGood($this);
-        }
+        $this->good = $good;
 
         return $this;
     }
 
-    public function removeGood(Goods $good): self
-    {
-        if ($this->goods->removeElement($good)) {
-            // set the owning side to null (unless already changed)
-            if ($good->getGood() === $this) {
-                $good->setGood(null);
-            }
-        }
 
-        return $this;
-    }
-
-    /**
-     * @return Collection|EavCategoryAttribute[]
-     */
-    public function getAttribute(): Collection
-    {
-        return $this->attribute;
-    }
-
-    public function addAttribute(EavCategoryAttribute $attribute): self
-    {
-        if (!$this->attribute->contains($attribute)) {
-            $this->attribute[] = $attribute;
-            $attribute->setValues($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAttribute(EavCategoryAttribute $attribute): self
-    {
-        if ($this->attribute->removeElement($attribute)) {
-            // set the owning side to null (unless already changed)
-            if ($attribute->getValues() === $this) {
-                $attribute->setValues(null);
-            }
-        }
-
-        return $this;
-    }
 }

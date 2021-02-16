@@ -6,6 +6,7 @@ use App\Repository\GoodsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=GoodsRepository::class)
@@ -40,9 +41,9 @@ class Goods
     private $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\EavValue", inversedBy="goods", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\EavValue", mappedBy="good", fetch="EAGER")
      */
-    private $value;
+    private $values;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\OrderGood", mappedBy="good", fetch="EAGER")
@@ -64,9 +65,10 @@ class Goods
 //     */
 //    private $taken;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->orderGood = new ArrayCollection();
+        $this->values = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,14 +178,24 @@ class Goods
         return $this;
     }
 
-    public function getValue(): ?EavValue
+    public function addValue(EavValue $value): self
     {
-        return $this->value;
+        if (!$this->values->contains($value)) {
+            $this->values[] = $value;
+            $value->setGood($this);
+        }
+
+        return $this;
     }
 
-    public function setValue(?EavValue $value): self
+    public function removeValue(EavValue $value): self
     {
-        $this->value = $value;
+        if ($this->values->removeElement($value)) {
+            // set the owning side to null (unless already changed)
+            if ($value->getGood() === $this) {
+                $value->setGood(null);
+            }
+        }
 
         return $this;
     }
