@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Goods;
-use App\Form\GoodType;
-use App\Repository\CategoryRepository;
-use App\Service\Admin\Admin;
+use App\Entity\Category;
+//use App\Service\Admin\AdminService;
+use App\Service\Admin\AdminService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,14 +17,14 @@ use Symfony\Component\Serializer\Serializer;
 
 class AdminController extends AbstractController
 {
-    private $admin;
-    private $categories;
-    private $serializer;
+    private AdminService $admin;
+    private Serializer $serializer;
+    private EntityManagerInterface $manager;
 
-    public function __construct(Admin $admin, CategoryRepository $categories)
+    public function __construct(AdminService $admin, EntityManagerInterface $manager)
     {
         $this->admin = $admin;
-        $this->categories = $categories;
+        $this->manager = $manager;
         $encoder = [new JsonEncoder()];
         $normalizer = [new ObjectNormalizer()];
         $this->serializer = new Serializer($normalizer, $encoder);
@@ -37,8 +37,40 @@ class AdminController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('admin/index.html.twig', [
-            'users' => $this->admin->getUsers(),
-            'categories' => $this->categories->findAll()
+            'users' => $this->admin->getUsersService()->getUsers(),
+            'categories' => $this->manager->getRepository(Category::class)->findAll()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/removeuser/{id}", name="removeUser", methods={"POST"}, options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeUser(Request $request): JsonResponse
+    {
+        $res = $this->admin->getUsersService()->removeUser($request->request->get('id'));
+        if ($request->isXmlHttpRequest() && $res) {
+            return new JsonResponse(["Success" => "success"]);
+        }
+        return new JsonResponse([
+            "ERROR" => "Incorrect JSON"
+        ]);
+    }
+
+    /**
+     * @Route("/admin/promtuser/{id}", name="promtUser", methods={"POST"}, options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function promtUser(Request $request): JsonResponse
+    {
+        $res = $this->admin->getUsersService()->promtUser($request->request->get('id'));
+        if ($request->isXmlHttpRequest() && $res) {
+            return new JsonResponse(["Success" => "success"]);
+        }
+        return new JsonResponse([
+            "ERROR" => "Incorrect JSON"
         ]);
     }
 
@@ -49,7 +81,23 @@ class AdminController extends AbstractController
      */
     public function addGood(Request $request): JsonResponse
     {
-        $res = $this->admin->addGood((array)json_decode($request->request->get('data')));
+        $res = $this->admin->getGoodsService()->addGood((array)json_decode($request->request->get('data')));
+        if ($request->isXmlHttpRequest() && $res) {
+            return new JsonResponse(["Success" => "success"]);
+        }
+        return new JsonResponse([
+            "ERROR" => "Incorrect JSON"
+        ]);
+    }
+
+    /**
+     * @Route("/admin/removegood/{id}", name="removeGood", methods={"POST"}, options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeGood(Request $request): JsonResponse
+    {
+        $res = $this->admin->getGoodsService()->removeGood($request->request->get('id'));
         if ($request->isXmlHttpRequest() && $res) {
             return new JsonResponse(["Success" => "success"]);
         }
@@ -78,71 +126,23 @@ class AdminController extends AbstractController
     public function addCategory(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true)['data'];
-        return new JsonResponse(($this->serializer->serialize($this->admin->addCategory(
+        return new JsonResponse(($this->serializer->serialize($this->admin->getCategoryService()->addCategory(
             $data['name'],
             $data['fields']
         ),'json')));
     }
 
     /**
-     * @Route("/admin/getcategoryfield/{id}", name="getCategoryField", methods={"POST"}, options={"expose"=true})
+     * @Route("/admin/getcategoryfields/{id}", name="getCategoryFields", methods={"POST"}, options={"expose"=true})
      * @param Request $request
      * @return JsonResponse
      */
-    public function getCategoryField(Request $request): JsonResponse
+    public function getCategoryFields(Request $request): JsonResponse
     {
-        return new JsonResponse(($this->serializer->serialize($this->admin->getCategoryField(
-            json_decode($request->getContent(), true)['id']
-        ),'json')));
+        $fields = $this->admin->getCategoryService()->getCategoryFields
+        (json_decode($request->getContent(), true)['id']);
+        return new JsonResponse($this->serializer->serialize($fields,'json'), 200, [], true);
     }
 
-    // getCategoryField
 
-    /**
-     * @Route("/admin/removegood/{id}", name="removeGood", methods={"POST"}, options={"expose"=true})
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function removeGood(Request $request): JsonResponse
-    {
-        $res = $this->admin->removeGood($request->request->get('id'));
-        if ($request->isXmlHttpRequest() && $res) {
-            return new JsonResponse(["Success" => "success"]);
-        }
-        return new JsonResponse([
-            "ERROR" => "Incorrect JSON"
-        ]);
-    }
-
-    /**
-     * @Route("/admin/removeuser/{id}", name="removeUser", methods={"POST"}, options={"expose"=true})
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function removeUser(Request $request): JsonResponse
-    {
-        $res = $this->admin->removeUser($request->request->get('id'));
-        if ($request->isXmlHttpRequest() && $res) {
-            return new JsonResponse(["Success" => "success"]);
-        }
-        return new JsonResponse([
-            "ERROR" => "Incorrect JSON"
-        ]);
-    }
-
-    /**
-     * @Route("/admin/promtuser/{id}", name="promtUser", methods={"POST"}, options={"expose"=true})
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function promtUser(Request $request): JsonResponse
-    {
-        $res = $this->admin->promtUser($request->request->get('id'));
-        if ($request->isXmlHttpRequest() && $res) {
-            return new JsonResponse(["Success" => "success"]);
-        }
-        return new JsonResponse([
-            "ERROR" => "Incorrect JSON"
-        ]);
-    }
 }

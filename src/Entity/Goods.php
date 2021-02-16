@@ -40,6 +40,11 @@ class Goods
     private $category;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\EavValue", inversedBy="goods", fetch="EAGER")
+     */
+    private $value;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\OrderGood", mappedBy="good", fetch="EAGER")
      */
     private $orderGood;
@@ -167,6 +172,18 @@ class Goods
                 $orderGood->setGood(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getValue(): ?EavValue
+    {
+        return $this->value;
+    }
+
+    public function setValue(?EavValue $value): self
+    {
+        $this->value = $value;
 
         return $this;
     }

@@ -47,7 +47,7 @@ class GoodsService
         $this->cache = $cache;
     }
 
-    public function doActions($request)
+    public function doActions($request): Paginator
     {
         /**
          * @var $goodsRepository GoodsRepository
@@ -60,8 +60,11 @@ class GoodsService
 
         $this->filterService->applyFilter($this->filters, $qb);
         $this->sortService->applySort($this->sorts, $qb);
+        return $this->paginate($qb, $request);
+    }
 
-        // ------- PAGINATOR ------- //
+    public function paginate(QueryBuilder $qb, array $request): Paginator
+    {
         $paginator = new Paginator($qb->getQuery());
         $limit = 6;
         $paginator->getQuery()

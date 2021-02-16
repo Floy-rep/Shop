@@ -30,7 +30,8 @@ class EavCategoryAttribute
     private $type;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\EavCategoryValue", inversedBy="attribute", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="attribute", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\EavValue", inversedBy="attribute", fetch="EAGER")
      */
     private $values;
 

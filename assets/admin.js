@@ -106,11 +106,15 @@ category_field_add.addEventListener('click', (event) => {
 
 let category_button_select = document.getElementById('good_category');
 category_button_select.addEventListener('change', (event) => {
-    axios.post(Routing.generate('getCategoryField', {'id': event.target[event.target.selectedIndex].id}), {
+    axios.post(Routing.generate('getCategoryFields', {'id': event.target[event.target.selectedIndex].id}), {
         'id': event.target[event.target.selectedIndex].id
     })
         .then((response) => {
-            console.log(response.data)
+                let fields = document.getElementById('fields');
+                while (fields.lastElementChild)
+                    fields.removeChild(fields.lastElementChild);
+                for (let i = 0; i < response.data.length; i++)
+                    fields.innerHTML += response.data[i]
         })
 })
 
@@ -122,7 +126,7 @@ category_button_save.addEventListener('click', (event) => {
         let field = 'field_' + iterator
         data["fields"][field] = {
             "name": item.children.item(1).value,
-            "type": item.children.item(3).selectedIndex
+            "type": item.children.item(3).value
         }
         iterator++
     }
